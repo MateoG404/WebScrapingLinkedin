@@ -5,7 +5,7 @@
 
 Esta es una breve descripción de la propuesta para la extracción de información de egresados en LinkedIn. La propuesta completa, con todos los detalles y el flujo del proceso, se encuentra en el siguiente documento PDF:
 
-[Descargar Propuesta en PDF](Propuesta.pdf)
+[Ver Propuesta en PDF](Propuesta.pdf)
 
 Este proyecto utiliza la biblioteca Scrapy para llevar a cabo tareas de web scraping en sitios web. A continuación, se detalla cómo instalar los requisitos necesarios para ejecutar el proyecto.
 
