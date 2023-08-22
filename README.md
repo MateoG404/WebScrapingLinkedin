@@ -13,9 +13,10 @@ Este proyecto utiliza la biblioteca Scrapy para llevar a cabo tareas de web scra
 
 Asegúrate de tener instalado Python en tu sistema. Puedes descargarlo desde [python.org](https://www.python.org/downloads/) o utilizar un manejador de paquetes como `conda` si lo prefieres.
 
-## Instalación de Dependencias
+## Pasos para realizar webscraping
 
-Para instalar las dependencias necesarias, sigue estos pasos:
+Si quieres ver un ejemplo corto de la información extraida puedes ver [AQUI](linkedin_education_spider/salida.json)
+Para realizar el webscraping, sigue estos pasos:
 
 1. **Clona el Repositorio**: Clona este repositorio en tu máquina local o descárgalo como archivo ZIP.
 
@@ -53,8 +54,4 @@ cd linkedin_education_spider
 scrapy crawl linkedin_people_profile -o salida.json
 
 ```
-
-## Requerimientos funcionales
-
-Creación de propuesta para extraer información de egresados en LINKEDIN la cual debe contener el flujo del proceso, un esquema de base de datos con la información que se extraiga y un documento corto en donde se indique el proceso a seguir. 
 
