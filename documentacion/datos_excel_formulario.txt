@@ -1,0 +1,57 @@
+
+Excel Respuestas Formulario 
+
+* Fecha/hora registro respuesta
+* correo
+* Autorizacion manejo de datos
+* DNI
+* Pregrado
+* Edad
+* Ciudad que vive
+* Tipo lugar que vive (Rural/Urbano)
+* Estrato socioeconomico
+* Tipo vivienda (Arriendo, familiar, propia)
+* Periodo graduacion
+* Años experiencia desde que se graduo
+* Cursos extra (null, posgrado,diplomado, especializacion)
+* Locacion cursos extra (UN/ otros)
+* Ciudad donde realizo cursos
+* Idiomas que habla aparte del español (1,2,3,4 o más)
+* Tipo vinculacion laboral (Prestacion_servicios, horas, termino indefinido, termino definido)
+* Ciudad donde trabaja (Remoto)
+* Cantidad salarios minimos
+* Tipo de empresa (Publica, privada, mixta)
+* Empresa nacional o internacional
+* Sector economico en el que trabaja
+* Actividad economica de la empresa
+* Tipo cargo (Administrativo, operativo, comercial)
+* Área de trabajo 
+* Nombre del puesto que ocupa actualmente
+* Funciones del puesto
+* Su trabajo realiza actividades repetitivas (yes/no)
+* Resuelve problemas nuevos al acabar sus funciones laborales (yes/no)
+* Trabaja con personas de otras profesiones (yes/no)
+* Trabaja con personas externas a la empresa (yes/no)
+* Toma decisiones que influyen fuertemente en la empresa (yes/no)
+* Cantidad de personas acargo (0,1,2,...)
+* Su trabajo cumple con las expectativas que tenia al finalizar su pregrado (yes/no)
+* Por qué?
+* Nivel de satisfaccion con su trabajo
+* Relacion entre su trabajo y su profesion
+* No se encuentra trabajando por (estudio, cambio empresa, no encuentra trabajo)
+* Aplicacion de conocimientos en ciencias (alto, bajo, medio)
+* Aplicacion de conocimiento en metodologias de diseño y tecnologia (alto, bajo, medio)
+* Aplicar criterios ambientales, seguridad industrial, salud ocupacional (alto, medio, bajo)
+* Necesidad de estar generar nuevos conocimientos (alto, bajo, medio)
+* Liderar proyectos (alto, bajo, medio)
+* Liderar proyectos con sentido etico profesional (alto, bajo, medio)
+* Mejora de proyectos a nivel industrial (alto, bajo, medio)
+* Desarrollar proyectos con enfoque social (alto, bajo, medio)
+* Comunicacion en equipo (alto,bajo,medio)
+* Comunicacion de ideas (alto,bajo,medio)
+* Asignaturas que potenciaron sus habilidades
+* Actividades extracurriculares que potenciaron sus habilidades
+* Asignatura que le ha resultado más util
+* Habilidades o conocimientos que le hubiera gustado desarrollar
+* Despues de graduarse cuanto tiempo demoro en conseguir trabajo	
+
