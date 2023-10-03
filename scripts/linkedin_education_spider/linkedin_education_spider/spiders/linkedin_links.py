@@ -29,18 +29,15 @@ class LinkedinLinks:
         self.df_limpio.drop_duplicates(subset=['URL'], keep='first', inplace=True)
         self.df_sucio.drop_duplicates(subset=['URL'], keep='first', inplace=True)
 
-        print("Duplicates removed:")
-        print(self.df_limpio.info())
-        print(self.df_sucio.info())
 
     def exportar(self,df,nombre):
         self.remove_duplicates()
-        
+        print(self.df_limpio.info())
         df.to_excel(self.path_root + "/" + nombre +".xlsx")
 
 if __name__ == "__main__":
     obj = LinkedinLinks()
     obj.lectura_archivos()
-    print(obj.df_limpio.info())
+    
     obj.exportar(obj.df_limpio,'df_limpio')
     obj.exportar(obj.df_sucio,'df_sucio')
