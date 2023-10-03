@@ -1,16 +1,50 @@
 import scrapy
+import pandas as pd
 
 class LinkedInPeopleProfileSpider(scrapy.Spider):
     name = "linkedin_people_profile"
 
     custom_settings = {
         'FEEDS': { 'data/%(name)s_%(time)s.jsonl': { 'format': 'jsonlines',}}
-        }
+            }
+    def get_profile_list(self,file_path):
+        try:
+            # Read the Excel file into a DataFrame
+            df = pd.read_excel(file_path)
+            
+            # Check for the existence of the 'URL' column
+            if 'URL' not in df.columns:
+                print("Error: 'URL' column not found.")
+                return None
 
+            # Extract URLs and store them in a list
+            url_list = df['URL'].dropna().tolist()
 
+            return url_list
+
+        except FileNotFoundError:
+            print(f"Error: File {file_path} not found.")
+            return None
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return None
+
+    
     def start_requests(self):
         
-        profile_list = ['josé-ismael-peña-reyes-5ab68143','dolly-montoya-castaño-38918020','reidhoffman','mateo-gutiérrez-melo-389996209','juanwilchesmadlies','desarrollósoluciones']
+        profile_list = self.get_profile_list('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/copy/df_limpio.xlsx')#['josé-ismael-peña-reyes-5ab68143','dolly-montoya-castaño-38918020','reidhoffman','mateo-gutiérrez-melo-389996209','juanwilchesmadlies','desarrollósoluciones']
+        print("  --- ")
+        print("   ")
+        print("   ")
+        print("   ")
+
+
+        print(profile_list)
+        print("   ")
+        print("   ")
+        print("   ")
+        print("  --- ")
+
         for profile in profile_list:
             linkedin_people_url = f'https://www.linkedin.com/in/{profile}/' 
             yield scrapy.Request(url=linkedin_people_url, callback=self.parse_profile, meta={'profile': profile, 'linkedin_url': linkedin_people_url})
@@ -166,5 +200,6 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
         yield item
 
        
-    
+obj = LinkedInPeopleProfileSpider()
+print(obj.get_profile_list('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/copy/df_limpio.xlsx'))
 
