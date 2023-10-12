@@ -25,11 +25,11 @@ class Busqueda:
     def login_with_email(self):
         driver = self.driver
         email = driver.find_element(By.XPATH,'//*[@id="username"]')
-        email.send_keys(os.environ.get('EMAIL2'))
+        email.send_keys(os.environ.get('EMAIL'))
         password = driver.find_element(By.XPATH,'//*[@id="password"]')
         password.send_keys(os.environ.get('PASSWORD'))
         self.sesion = driver.find_element(By.XPATH,'//*[@id="organic-div"]/form/div[3]/button').click()
-        #time.sleep(60)
+        time.sleep(60)
 
     def scrape_profile(self, profile_url):
         

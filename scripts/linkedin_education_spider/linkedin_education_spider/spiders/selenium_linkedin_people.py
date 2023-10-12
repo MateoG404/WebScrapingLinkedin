@@ -48,7 +48,7 @@ if __name__ == "__main__":
     lista_links = lista_links[500:502]
     
     for profile in lista_links:
-        busqueda_obj.scrape_profile(profile)
+        print(busqueda_obj.scrape_profile(profile))
     
     print(lista_links)
 
