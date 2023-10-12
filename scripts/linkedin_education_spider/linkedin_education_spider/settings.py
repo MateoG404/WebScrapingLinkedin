@@ -19,9 +19,9 @@ ROBOTSTXT_OBEY = False
 
 
 
-SCRAPEOPS_API_KEY = '3c97afc6-6b8c-4b5b-bb1c-be505f4ff94d'
+SCRAPEOPS_API_KEY = '48d6cd4d-3476-414f-8fb4-f64539330026'
 
-SCRAPEOPS_PROXY_ENABLED = True
+
 
 # Add In The ScrapeOps Monitoring Extension
 EXTENSIONS = {

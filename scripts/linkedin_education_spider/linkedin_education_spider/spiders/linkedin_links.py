@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import re
 
 class LinkedinLinks:
 
@@ -8,36 +9,39 @@ class LinkedinLinks:
         self.df_sucio = pd.DataFrame()
         self.lista_archivos = []
         self.lista_archivos_leidos = []
+    def lectura_archivos(self, path):
+        if os.path.exists(path):
+            try:
+                self.df_limpio = pd.read_excel(path)
+            except Exception as e:
+                print(f"Error al leer el archivo: {e}")
+        else:
+            print("La ruta del archivo no es válida.")
 
-    def lectura_archivos(self):
-        self.path_root = '/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/copy'
-        self.lista_archivos = os.listdir(self.path_root)
+    def get_links(self, path):
+        self.lectura_archivos(path)
+        
+        if not self.df_limpio.empty:
+            if 'URL' in self.df_limpio.columns:
+                self.url_list = list(self.df_limpio['URL'])
+                return self.url_list
+            else:
+                return None
 
-        for archivo in self.lista_archivos:
-            print("Comenzando lectura archivo ...", archivo)
-            df_temp = pd.read_excel(self.path_root + "/" + archivo)
-            self.limpieza_links(df_temp)
+    def get_profiles(self,path):
 
-    def limpieza_links(self, archivo):
-        df_limpio_temp = archivo[archivo['URL'].str.contains('linkedin', na=False)]
-        df_sucio_temp = archivo[~archivo['URL'].str.contains('linkedin', na=False)]
+        names = []
+        self.get_links(path)
 
-        self.df_limpio = pd.concat([self.df_limpio, df_limpio_temp], ignore_index=True)
-        self.df_sucio = pd.concat([self.df_sucio, df_sucio_temp], ignore_index=True)
-
-    def remove_duplicates(self):
-        self.df_limpio.drop_duplicates(subset=['URL'], keep='first', inplace=True)
-        self.df_sucio.drop_duplicates(subset=['URL'], keep='first', inplace=True)
-
-
-    def exportar(self,df,nombre):
-        self.remove_duplicates()
-        print(self.df_limpio.info())
-        df.to_excel(self.path_root + "/" + nombre +".xlsx")
-
+        
+        for url in self.url_list:
+            match = re.search(r'/in/([\w-]+)', url)
+            if match:
+                names.append(match.group(1))
+        return names
+            
 if __name__ == "__main__":
     obj = LinkedinLinks()
-    obj.lectura_archivos()
+    print(obj.get_links('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/NEW_DATA/clean_people_get_link.xlsx')[:2])
+
     
-    obj.exportar(obj.df_limpio,'df_limpio')
-    obj.exportar(obj.df_sucio,'df_sucio')

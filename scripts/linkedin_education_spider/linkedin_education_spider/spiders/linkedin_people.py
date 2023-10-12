@@ -1,6 +1,8 @@
 import scrapy
 import pandas as pd
 
+from .linkedin_links import LinkedinLinks
+
 class LinkedInPeopleProfileSpider(scrapy.Spider):
     name = "linkedin_people_profile"
 
@@ -31,21 +33,18 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
 
     
     def start_requests(self):
+
+        #['josé-ismael-peña-reyes-5ab68143','dolly-montoya-castaño-38918020','reidhoffman','mateo-gutiérrez-melo-389996209','juanwilchesmadlies','desarrollósoluciones']
+        obj = LinkedinLinks()
+        profile_list = obj.get_profiles('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/NEW_DATA/clean_people_get_link.xlsx')
         
-        profile_list = self.get_profile_list('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/copy/df_limpio.xlsx')#['josé-ismael-peña-reyes-5ab68143','dolly-montoya-castaño-38918020','reidhoffman','mateo-gutiérrez-melo-389996209','juanwilchesmadlies','desarrollósoluciones']
-        print("  --- ")
-        print("   ")
-        print("   ")
-        print("   ")
+        
+        profile_list = profile_list[:5]
 
-
-        print(profile_list)
-        print("   ")
-        print("   ")
-        print("   ")
-        print("  --- ")
-
+        #profile_list = ['mateo-gutiérrez-melo-389996209']#['fabian-antonio-perez-arias-42226616a']
+        #profile_list = ['mateo-gutiérrez-melo-389996209']
         for profile in profile_list:
+            
             linkedin_people_url = f'https://www.linkedin.com/in/{profile}/' 
             yield scrapy.Request(url=linkedin_people_url, callback=self.parse_profile, meta={'profile': profile, 'linkedin_url': linkedin_people_url})
 
