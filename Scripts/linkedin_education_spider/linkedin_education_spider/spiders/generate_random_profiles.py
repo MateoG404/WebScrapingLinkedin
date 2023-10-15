@@ -41,4 +41,4 @@ for i in range(100):
 
 print("sss")
 with open('linkedin_profiles.json', 'w') as f:
-    json.dump(profiles, f, indent=4,separators=(',', ':'))
+    json.dump(profiles, f, indent=3,separators=(',', ':'))
