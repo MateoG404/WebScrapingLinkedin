@@ -36,10 +36,11 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
 
         #['josé-ismael-peña-reyes-5ab68143','dolly-montoya-castaño-38918020','reidhoffman','mateo-gutiérrez-melo-389996209','juanwilchesmadlies','desarrollósoluciones']
         obj = LinkedinLinks()
+        
         profile_list = obj.get_profiles('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/NEW_DATA/clean_people_get_link.xlsx')
         
         
-        profile_list = profile_list[126:500]
+        profile_list = profile_list[1000:1200]
 
         #profile_list = ['mateo-gutiérrez-melo-389996209']#['fabian-antonio-perez-arias-42226616a']
         #profile_list = ['mateo-gutiérrez-melo-389996209']
