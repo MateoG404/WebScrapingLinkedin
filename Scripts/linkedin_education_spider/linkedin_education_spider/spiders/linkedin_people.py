@@ -42,8 +42,7 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
 
         #profile_list = ['mateo-gutiérrez-melo-389996209']#['fabian-antonio-perez-arias-42226616a']
         profile_list = ['diana-milena-rivera-g']
-        linkedin_urls = ['https://www.linkedin.com/in/sergio-andres-mendoza-velandia-6604a71a1/?locale=fr_FR', 'https://www.linkedin.com/in/edwin-fabian-cifuentes-galvis-306802127/', 'https://www.linkedin.com/in/diego-romero-lombo-7194b21ab/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=it', 'https://www.linkedin.com/in/daniel-felipe-garz%C3%B3n-gallo-6b231b1b8/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=co']
-
+        linkedin_urls = ['https://www.linkedin.com/in/jose-alejandro-perez-pardo/', 'https://www.linkedin.com/in/cafbeltranci/', 'https://www.linkedin.com/in/guillermo-gaviria-l%C3%B3pez-18195297/', 'https://www.linkedin.com/in/catalina-vasquez-6955b698/', 'https://www.linkedin.com/in/daguirres/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=de', 'https://www.linkedin.com/in/sebastian-garcia-031629122/', 'https://www.linkedin.com/in/juan-carlos-zambrano-48a34311/?locale=en_US', 'https://www.linkedin.com/in/sebasti%C3%A1n-rosas-barahona-3213b9159/', 'https://www.linkedin.com/in/sebasti%C3%A1n-rosas-barahona-3213b9159/', 'https://www.linkedin.com/in/edgar-fernando-duarte-herrera-5425b9b4/']
 
 
         for profile in linkedin_urls:
