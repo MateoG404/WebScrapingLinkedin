@@ -42,7 +42,8 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
 
         #profile_list = ['mateo-gutiérrez-melo-389996209']#['fabian-antonio-perez-arias-42226616a']
         profile_list = ['diana-milena-rivera-g']
-        linkedin_urls = ['https://www.linkedin.com/in/edwin-ayala-34800757/', 'https://www.linkedin.com/in/sebasti%C3%A1n-gutierrez-pacheco-40a5425a/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=ca', 'https://www.linkedin.com/in/laura-andrea-52b465172/', 'https://www.linkedin.com/in/alejandro-ocampo-rodr%C3%ADguez-39985a4a/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=ae', 'https://www.linkedin.com/in/ivan-dar%C3%ADo-acosta-calle-559458138/', 'https://www.linkedin.com/in/daniel-felipe-gonzalez/', 'https://www.linkedin.com/in/ivan-correa-herran-75261036/', 'https://www.linkedin.com/in/sebastian-bernal-morales-7891a893/', 'https://www.linkedin.com/in/ivdgonzalezco/?locale=es_ES', 'https://www.linkedin.com/in/javier-orlando-bacca-garc%C3%ADa-77a7023a/?originalSubdomain=co']
+        linkedin_urls = ['https://www.linkedin.com/in/sergio-andres-mendoza-velandia-6604a71a1/?locale=fr_FR', 'https://www.linkedin.com/in/edwin-fabian-cifuentes-galvis-306802127/', 'https://www.linkedin.com/in/diego-romero-lombo-7194b21ab/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=it', 'https://www.linkedin.com/in/daniel-felipe-garz%C3%B3n-gallo-6b231b1b8/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=co']
+
 
 
         for profile in linkedin_urls:
