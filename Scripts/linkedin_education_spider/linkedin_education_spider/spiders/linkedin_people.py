@@ -1,6 +1,5 @@
 import scrapy
 import pandas as pd
-
 from .linkedin_links import LinkedinLinks
 
 class LinkedInPeopleProfileSpider(scrapy.Spider):
@@ -35,18 +34,21 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
     def start_requests(self):
 
         #['josé-ismael-peña-reyes-5ab68143','dolly-montoya-castaño-38918020','reidhoffman','mateo-gutiérrez-melo-389996209','juanwilchesmadlies','desarrollósoluciones']
-        obj = LinkedinLinks()
+        #obj = LinkedinLinks()
         
-        profile_list = obj.get_profiles('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/NEW_DATA/clean_people_get_link.xlsx')
+        #profile_list = obj.get_profiles()
         
-        
-        profile_list = profile_list[1000:1200]
+        #profile_list = profile_list[:2]
 
         #profile_list = ['mateo-gutiérrez-melo-389996209']#['fabian-antonio-perez-arias-42226616a']
-        #profile_list = ['mateo-gutiérrez-melo-389996209']
-        for profile in profile_list:
+        profile_list = ['diana-milena-rivera-g']
+        linkedin_urls = ['https://www.linkedin.com/in/edwin-ayala-34800757/', 'https://www.linkedin.com/in/sebasti%C3%A1n-gutierrez-pacheco-40a5425a/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=ca', 'https://www.linkedin.com/in/laura-andrea-52b465172/', 'https://www.linkedin.com/in/alejandro-ocampo-rodr%C3%ADguez-39985a4a/?original_referer=https%3A%2F%2Fwww%2Egoogle%2Ecom%2F&originalSubdomain=ae', 'https://www.linkedin.com/in/ivan-dar%C3%ADo-acosta-calle-559458138/', 'https://www.linkedin.com/in/daniel-felipe-gonzalez/', 'https://www.linkedin.com/in/ivan-correa-herran-75261036/', 'https://www.linkedin.com/in/sebastian-bernal-morales-7891a893/', 'https://www.linkedin.com/in/ivdgonzalezco/?locale=es_ES', 'https://www.linkedin.com/in/javier-orlando-bacca-garc%C3%ADa-77a7023a/?originalSubdomain=co']
+
+
+        for profile in linkedin_urls:
             
-            linkedin_people_url = f'https://www.linkedin.com/in/{profile}/' 
+            #linkedin_people_url = f'https://www.linkedin.com/in/{profile}/' 
+            linkedin_people_url = profile
             yield scrapy.Request(url=linkedin_people_url, callback=self.parse_profile, meta={'profile': profile, 'linkedin_url': linkedin_people_url})
 
 
@@ -200,6 +202,5 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
         yield item
 
        
-obj = LinkedInPeopleProfileSpider()
-print(obj.get_profile_list('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/copy/df_limpio.xlsx'))
-
+#obj = LinkedInPeopleProfileSpider()
+#print(obj.get_profile_list('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/copy/df_limpio.xlsx'))

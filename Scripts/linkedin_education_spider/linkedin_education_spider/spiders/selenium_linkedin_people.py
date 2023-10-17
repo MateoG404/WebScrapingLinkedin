@@ -1,3 +1,5 @@
+
+'''
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -52,6 +54,7 @@ if __name__ == "__main__":
     
     print(lista_links)
 
+'''
 '''
 
     busqueda_google.send_keys(nombre)

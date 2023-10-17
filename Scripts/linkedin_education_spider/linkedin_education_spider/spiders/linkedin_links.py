@@ -9,6 +9,7 @@ class LinkedinLinks:
         self.df_sucio = pd.DataFrame()
         self.lista_archivos = []
         self.lista_archivos_leidos = []
+
     def lectura_archivos(self, path):
         if os.path.exists(path):
             try:
@@ -38,10 +39,34 @@ class LinkedinLinks:
             match = re.search(r'/in/([\w-]+)', url)
             if match:
                 names.append(match.group(1))
+                
         return names
-            
+    
+    def get_profile(self,profile_name):
+        match = re.search(r'/in/([\w-]+)', profile_name) 
+        return match.group(1)
+    
+    def returnDataForBot(self):
+        """
+        Define various file paths for the web scraping operation.
+
+        Returns:
+            tuple: general_path, path_data_bot, file_to_scrape
+        """
+        # Determine the general path
+        general_path = os.path.abspath(os.path.join(os.getcwd(), "..", "..", "..", ".."))
+
+        # Specify the path to store scraped data
+        path_data_bot = os.path.join(general_path, "Data", "Links_Linkedin", "BD_egresados", "Data_Bot")
+        
+        # Specify the Excel file to read
+        file_to_scrape = os.path.join(path_data_bot, "Data_BotUnificacion_total.xlsx")
+        
+        df_data = pd.read_excel(file_to_scrape)
+        return df_data
+    
 if __name__ == "__main__":
     obj = LinkedinLinks()
-    print(obj.get_links('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/NEW_DATA/clean_people_get_link.xlsx')[:2])
+    obj.returnDataForBot()
 
     
