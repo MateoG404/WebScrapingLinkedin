@@ -33,17 +33,8 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
     
     def start_requests(self):
 
-        #['josé-ismael-peña-reyes-5ab68143','dolly-montoya-castaño-38918020','reidhoffman','mateo-gutiérrez-melo-389996209','juanwilchesmadlies','desarrollósoluciones']
-        #obj = LinkedinLinks()
-        
-        #profile_list = obj.get_profiles()
-        
-        #profile_list = profile_list[:2]
-
-        #profile_list = ['mateo-gutiérrez-melo-389996209']#['fabian-antonio-perez-arias-42226616a']
         profile_list = ['diana-milena-rivera-g']
         linkedin_urls = ['https://www.linkedin.com/in/luis-fernando-rico-ortiz/', 'https://www.linkedin.com/in/nestor-donato/', 'https://www.linkedin.com/in/danielcamachoauditor/', 'https://www.linkedin.com/in/david-baracaldo/?originalSubdomain=it', 'https://www.linkedin.com/in/dsab89/?originalSubdomain=co', 'https://www.linkedin.com/in/0estebanjs/?originalSubdomain=co', 'https://www.linkedin.com/in/jonnathan-alejandro-s%C3%A1nchez-alarc%C3%B3n-bb1494139/?originalSubdomain=co', 'https://www.linkedin.com/in/andres-rincon-900b88a1/?originalSubdomain=co', 'https://www.linkedin.com/in/dicrojasch/?originalSubdomain=co', 'https://www.linkedin.com/in/david-alejandro-martinez-pinto-05227994/?originalSubdomain=co', 'https://www.linkedin.com/in/jonnathan-alejandro-s%C3%A1nchez-alarc%C3%B3n-bb1494139/?originalSubdomain=co']
-
 
         for profile in linkedin_urls:
             
@@ -202,5 +193,3 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
         yield item
 
        
-#obj = LinkedInPeopleProfileSpider()
-#print(obj.get_profile_list('/home/user/Desktop/MateoCodes/WebScrapingLinkedin/documentacion/copy/df_limpio.xlsx'))
