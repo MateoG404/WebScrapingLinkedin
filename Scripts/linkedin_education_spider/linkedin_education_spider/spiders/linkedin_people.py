@@ -34,17 +34,18 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
     def start_requests(self):
 
         
-        linkedin_urls = ["https://www.linkedin.com/in/david-alejandro-martinez-pinto-05227994",
-                 "https://www.linkedin.com/in/juan-camilo-liberato-luna-100a2b33",
-                 "https://www.linkedin.com/in/faaacunavi",
-                 "https://www.linkedin.com/in/steve-eduardo-moscoso-urdaneta-5a523210a",
-                 "https://www.linkedin.com/in/ooaacelasu",
-                 "https://www.linkedin.com/in/samyfcruzb",
-                 "https://www.linkedin.com/in/ra%C3%BAl-fernando-martinez-oviedo-48799067",
-                 "https://www.linkedin.com/in/jhair-pinzon",
-                 "https://www.linkedin.com/in/cristian-leonardo-toro-sarmiento-1b6021a0",
-                 "https://www.linkedin.com/in/andres-leonardo-torres-gonzalez-40a1014a"]
-
+        linkedin_urls =  [
+        "https://www.linkedin.com/in/alberto-riveros-carrillo",
+        "https://www.linkedin.com/in/jos%C3%A9-luis-gonz%C3%A1lez-pisa-98b62b26",
+        "https://www.linkedin.com/in/kevin-de-la-cruz-272910276",
+        "https://www.linkedin.com/in/juan-achury-208676175",
+        "https://www.linkedin.com/in/juan-camilo-becerra-restrepo-3b8643b2",
+        "https://www.linkedin.com/in/camilo-andr%C3%A9s-guti%C3%A9rrez-osorio-479b6a13a",
+        "https://www.linkedin.com/in/mballen1",
+        "https://www.linkedin.com/in/julian-toro",
+        "https://www.linkedin.com/in/faguevaral",
+        "https://www.linkedin.com/in/andr%C3%A9s-felipe-cruz-971257171"
+        ]   
 
         for profile in linkedin_urls:
             
