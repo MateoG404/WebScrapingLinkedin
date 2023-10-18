@@ -33,8 +33,18 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
     
     def start_requests(self):
 
-        profile_list = ['diana-milena-rivera-g']
-        linkedin_urls = ['https://www.linkedin.com/in/luis-fernando-rico-ortiz/', 'https://www.linkedin.com/in/nestor-donato/', 'https://www.linkedin.com/in/danielcamachoauditor/', 'https://www.linkedin.com/in/david-baracaldo/?originalSubdomain=it', 'https://www.linkedin.com/in/dsab89/?originalSubdomain=co', 'https://www.linkedin.com/in/0estebanjs/?originalSubdomain=co', 'https://www.linkedin.com/in/jonnathan-alejandro-s%C3%A1nchez-alarc%C3%B3n-bb1494139/?originalSubdomain=co', 'https://www.linkedin.com/in/andres-rincon-900b88a1/?originalSubdomain=co', 'https://www.linkedin.com/in/dicrojasch/?originalSubdomain=co', 'https://www.linkedin.com/in/david-alejandro-martinez-pinto-05227994/?originalSubdomain=co', 'https://www.linkedin.com/in/jonnathan-alejandro-s%C3%A1nchez-alarc%C3%B3n-bb1494139/?originalSubdomain=co']
+        
+        linkedin_urls = ["https://www.linkedin.com/in/david-alejandro-martinez-pinto-05227994",
+                 "https://www.linkedin.com/in/juan-camilo-liberato-luna-100a2b33",
+                 "https://www.linkedin.com/in/faaacunavi",
+                 "https://www.linkedin.com/in/steve-eduardo-moscoso-urdaneta-5a523210a",
+                 "https://www.linkedin.com/in/ooaacelasu",
+                 "https://www.linkedin.com/in/samyfcruzb",
+                 "https://www.linkedin.com/in/ra%C3%BAl-fernando-martinez-oviedo-48799067",
+                 "https://www.linkedin.com/in/jhair-pinzon",
+                 "https://www.linkedin.com/in/cristian-leonardo-toro-sarmiento-1b6021a0",
+                 "https://www.linkedin.com/in/andres-leonardo-torres-gonzalez-40a1014a"]
+
 
         for profile in linkedin_urls:
             
