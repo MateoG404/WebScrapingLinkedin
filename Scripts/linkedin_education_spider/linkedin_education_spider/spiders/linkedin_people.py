@@ -34,18 +34,18 @@ class LinkedInPeopleProfileSpider(scrapy.Spider):
     def start_requests(self):
 
         
-        linkedin_urls =  [
-        "https://www.linkedin.com/in/alberto-riveros-carrillo",
-        "https://www.linkedin.com/in/jos%C3%A9-luis-gonz%C3%A1lez-pisa-98b62b26",
-        "https://www.linkedin.com/in/kevin-de-la-cruz-272910276",
-        "https://www.linkedin.com/in/juan-achury-208676175",
-        "https://www.linkedin.com/in/juan-camilo-becerra-restrepo-3b8643b2",
-        "https://www.linkedin.com/in/camilo-andr%C3%A9s-guti%C3%A9rrez-osorio-479b6a13a",
-        "https://www.linkedin.com/in/mballen1",
-        "https://www.linkedin.com/in/julian-toro",
-        "https://www.linkedin.com/in/faguevaral",
-        "https://www.linkedin.com/in/andr%C3%A9s-felipe-cruz-971257171"
-        ]   
+        linkedin_urls =   [
+        "https://www.linkedin.com/in/nicolasaiz173",
+        "https://www.linkedin.com/in/mfjimenezco",
+        "https://www.linkedin.com/in/andres-mancera-099000151",
+        "https://www.linkedin.com/in/omar-sneyder-eraso-acero-02594351",
+        "https://www.linkedin.com/in/diego-fernando-romero-romero-429b18a6",
+        "https://www.linkedin.com/in/sergio-andr%C3%A9s-cort%C3%A9s-hern%C3%A1ndez-9754266a",
+        "https://www.linkedin.com/in/carlos-sanchez-a95791155",
+        "https://www.linkedin.com/in/jpbgit",
+        "https://www.linkedin.com/in/nicol%C3%A1s-guerrero73355b1b3",
+        "https://www.linkedin.com/in/jacob-camacho-espinosa-488961152"
+        ]    
 
         for profile in linkedin_urls:
             
