@@ -345,8 +345,24 @@ def modify_df(df):
     with open(path_data + '/df_final_user.pkl','wb') as f :
         pickle.dump(df,f)
 
-
+def mapeo_carrera(field):
+    field = unidecode(field.lower().strip())
+    print(field)
+    if 'tecnologias' in field or 'software' in field or 'data'in field or 'java' in field or 'informacion' in field or 'information' in field:
+        return 'Ingeniería de Sistemas y Computación'
+    if 'datos' in field or 'computer'  in field or 'programacion'  in field or 'automatizacion' in field or 'informatica' in field or 'computador'  in field or 'informatics'  in field:
+         return 'Ingeniería de Sistemas y Computación'
+    if 'industrial' in field or 'supply' in field or 'management' in field:
+        return 'Ingeniería Industrial'
+    if 'matematicas' in field or 'mathematics' in field:
+        return 'Ciencias Puras'
+    if 'business' in field or 'administracion' in field:
+        return 'Administración de Empresas'
+    
+    return field
 def eda_universidad(df):
+    '''
+    
     university_counts = df['UNIVERSIDAD'].value_counts().reset_index()
     university_counts.columns = ['UNIVERSIDAD', 'Count']
 
@@ -363,6 +379,203 @@ def eda_universidad(df):
     plt.xlabel('Count')
     plt.ylabel('University')
     plt.show()
+    '''
+    # For CAMPO_ESTUDIO
+    # Standardize the text and combine similar categories
+    df['CAMPO_ESTUDIO'] = df['CAMPO_ESTUDIO'].apply(lambda x: unidecode(str(x).lower().strip()))#.str.strip().str.lower()
+
+    replacement_dict = {
+    'ingenieria electronica':'Ingeniería Eléctrica y Electrónica',
+    'ingenieria electrica': 'Ingeniería Eléctrica y Electrónica',
+    'ingenieria':'Otras especializaciones ingeniería',
+    'ingenieria quimica': 'Ingeniería Química',
+    'ingenieria civil/ geotecnia':'Ingeniería Civil',
+    'mechatronics engineer':'Ingeniería Mecatrónica y Mécanica',
+    'industrial engineering': 'Ingeniería Industrial',
+    'mechanical engineering': 'Ingeniería Mecatrónica y Mécanica',
+    'ingeniero agricola': 'Ingeniería Agricola',
+    'computer science':'Ingeniería de Sistemas y Computación',
+    'chemical engineering':'Ingeniería Química',
+    'ingenieria de sistemas':'Ingeniería de Sistemas y Computación',
+    'ingenieria electrica': 'Ingeniería Eléctrica y Electrónica',
+    'ingenieria electronica, robotica y mecatronica':'Ingeniería Eléctrica y Electrónica',
+    'ingenieria civil':'Ingeniería Civil',
+    'ingenieria mecanica': 'Ingeniería Mecatrónica y Mécanica',
+    'civil engineering':'Ingeniería Civil',
+    'ingenieria de sistemas':'Ingeniería de Sistemas y Computación',
+    'ingenieria industrial':'Ingeniería Industrial',
+    'ingenieria electrica':'Ingeniería Eléctrica y Electrónica',
+    'ingenieria electronica, robotica y mecatronica':'Ingeniería Eléctrica y Electrónica',
+    'ingenieria industrial':'Ingeniería Industrial',
+    'ingenieria agricola': 'Ingeniería Agricola',
+    'ingenieria mecanica': 'Ingeniería Mecatrónica y Mécanica',
+    'ingenieria quimica':'Ingeniería Química',
+    'electrical and electronics engineering': 'Ingeniería Eléctrica y Electrónica',
+    'ingenieria electrica y electronica': 'Ingeniería Eléctrica y Electrónica',
+    'gestion de proyectos':'Administración de Empresas',
+    'mechatronics, robotics, and automation engineering':'Ingeniería Mecatrónica y Mécanica',
+    'administracion y gestion de empresas, general':'Administración de Empresas',
+    'ingenieria de sistemas y computacion':'Ingeniería de Sistemas y Computación',
+    'computer software engineering':'Ingeniería de Sistemas y Computación',
+    'ingenieria de software':'Ingeniería de Sistemas y Computación',
+    'electrical engineering': 'Ingeniería Eléctrica y Electrónica',
+    'engineering':'Otras especializaciones ingeniería',
+    'project management':'Administración de Empresas',
+    'ingenieria electrica, electronica y de comunicaciones': 'Ingeniería Eléctrica y Electrónica',
+    'business administration and management, general':'Administración de Empresas',
+    'ingenieria informatica':'Ingeniería de Sistemas y Computación',
+    'derecho':'Ciencias Humanas',
+    'ensenanza de ingles como lengua extranjera':'Ciencias Humanas',
+    'ingenieria estructural':'Ingeniería Civil',
+    'ciencia y tecnologia de los alimentos':'Otras especializaciones ingeniería',
+    'systems engineering':'Ingeniería de Sistemas y Computación',
+    'ingenieria mecatronica':'Ingeniería Mecatrónica y Mécanica',
+    'inteligencia artificial':'Ingeniería de Sistemas y Computación',
+    'computer engineering':'Ingeniería de Sistemas y Computación',
+    'marketing':'Administración de Empresas',
+    'mechatronics engineering':'Ingeniería Mecatrónica y Mécanica',
+    'ingenieria':'Otras especializaciones ingeniería',
+    'desarrollo de aplicaciones web':'Ingeniería de Sistemas y Computación',
+    'electronics engineering': 'Ingeniería Eléctrica y Electrónica',
+    'data science':'Ingeniería de Sistemas y Computación',
+    'economia':'Administración de Empresas',
+    'computer and systems engineering':'Ingeniería de Sistemas y Computación',
+    'tecnologia de la informacion':'Ingeniería de Sistemas y Computación',
+    'geotecnia':'Ingeniería Civil',
+    'gerencia de proyectos':'Administración de Empresas',
+    'ciencias de la computacion':'Ingeniería de Sistemas y Computación',
+    'emprendimiento/estudios sobre emprendimiento':'Administración de Empresas',
+    'agricultural engineering': 'Ingeniería Agricola',
+    'gestion de la construccion':'Ingeniería Civil',
+    'gestion logistica, de materiales y de la cadena de suministro': 'Ingeniería Industrial',
+    'tecnologia/tecnico de ingenieria electrica, electronica y de comunicaciones': 'Ingeniería Eléctrica y Electrónica',
+    'finanzas, general':'Administración de Empresas',
+    'estadistica':'Ciencias Puras',
+    'ingenieria de transporte/ingenieria de trafico':'Otras especializaciones ingeniería',
+    'automatizacion industrial':'Otras especializaciones ingeniería',
+    'ingenieria civil':'Ingeniería Civil',
+    'engineering/industrial management': 'Ingeniería Industrial',
+    'quimica':'Ciencias Puras',
+    'business':'Administración de Empresas',
+    'sistemas y computacion':'Ingeniería de Sistemas y Computación',
+    'sistemas':'Ingeniería de Sistemas y Computación',
+    'mecanica':'Ingeniería Mecatrónica y Mécanica',
+    'ingenieria biomedica/medica':'Otras especializaciones ingeniería',
+    'logistics, materials, and supply chain management':'Ingeniería Industrial',
+    'gerencia':'Administración de Empresas',
+    'psicologia':'Ciencias Humanas',
+    'mechanical engineer':'Ingeniería Mecatrónica y Mécanica',
+    'auditoria':'Otras especializaciones ingeniería',
+    'desarrollo de paginas web, contenido digital/multimedia y recursos informaticos':'Ingeniería de Sistemas y Computación',
+    'ingenieria informatica':'Ingeniería de Sistemas y Computación',
+    'ingenieria electrica y electronica':'Ingeniería Eléctrica y Electrónica',
+    'ingenieria agricola':'Ingeniería Agricola',
+    'gestion de proyectos':'Administración de Empresas',
+    'ingenieria de sistemas y computacion':'Ingeniería de Sistemas y Computación',
+    'administracion y gestion de empresas, general':'Administración de Empresas',
+    'ingenieria ambiental':'Otras especializaciones ingeniería',
+    'mecanica industrial':'Ingeniería Mecatrónica y Mécanica',
+    'gestion de recursos humanos/administracion de personal, general':'Administración de Empresas',
+    'seguridad informatica y de sistemas':'Ingeniería de Sistemas y Computación',
+    'food science and technology':'Otras especializaciones ingeniería',
+    'ingenieria de materiales':'Otras especializaciones ingeniería',
+    'educacion secundaria':'Ciencias Humanas',
+    'pedagogia':'Ciencias Humanas',
+    'genie civi':'Ingeniería Civil',
+    'ingenieria geotecnica y geoambiental':'Ingeniería Civil',
+    'hidrologia y gestion de recursos hidricos ':'Ingeniería Civil',
+    'ingenierie electrique et electronique':'Ingeniería Eléctrica y Electrónica',
+    'procesamiento de datos':'Ingeniería de Sistemas y Computación',
+    'systems and computing engineering':'Ingeniería de Sistemas y Computación',
+    'procesamiento de datos':'Ingeniería de Sistemas y Computación',
+    'matematicas':'Ciencias Puras',
+    'gestion industrial/de ingenieria':'Ingeniería Industrial',
+    'calidad':'Ingeniería Industrial',
+    '.':'Otras especializaciones ingeniería',
+    'agricultura, actividades agricolas y actividades afines':'Ingeniería Agricola',
+    'genie civil':'Ingeniería Civil',
+    'arquitectura':'Artes',
+    'ingenieria de la construccion':'Ingeniería Civil',
+    'hidrologia y gestion de recursos hidricos':'Ingeniería Civil',
+    'ingeniero civil':'Ingeniería Civil',
+    'programacion informatica':'Ingeniería de Sistemas y Computación',
+    'tecnologia informatica/tecnologia de sistemas informaticos':'Ingeniería de Sistemas y Computación',
+    'electronic engineering':'Ingeniería Eléctrica y Electrónica',
+    'educacion':'Ciencias Humanas',
+    'electronic engineer':'Ingeniería Eléctrica y Electrónica',
+    'tecnologia/tecnico de ingenieria de automatizacion':'Ingeniería de Sistemas y Computación',
+    'tecnologia/tecnico de control de calidad':'Ingeniería de Sistemas y Computación',
+    'tecnologia/tecnico auxiliar en sistemas informaticos':'Ingeniería de Sistemas y Computación',
+    'innovacion':'Administración de Empresas',
+    'none':'No se encontro campo de estudio',
+    'information and comunication techonologies':'Ingeniería de Sistemas y Computación',
+    'data analytics':'Ingeniería de Sistemas y Computación',
+    'ingenieria  electronica':'Ingeniería Eléctrica y Electrónica',
+    'mecatronica':'Ingeniería Mecatrónica y Mécanica',
+    'derechos humanos':'Ciencias Humanas',
+    'administracion y gestion de empresas':'Administración de Empresas',
+    'genie des procedes':'Otras especializaciones ingeniería',
+    'ingles':'Ciencias Humanas',
+    'electrical, electronics and communications engineering'
+    'electrical enginee':'Ingeniería Eléctrica y Electrónica',
+    'software informatico y aplicaciones multimedia':'Ingeniería de Sistemas y Computación',
+    'curso':'Ingeniería de Sistemas y Computación',
+    'medio ambiente y naturaleza':'Ingeniería Agricola',
+    'water resources engineering':'Ingeniería Agricola',
+    'electrical engineer':'Ingeniería Eléctrica y Electrónica',
+    'electrical, electronics and communications engineering':'Ingeniería Eléctrica y Electrónica',
+    'maschinenbau':'Otras especializaciones ingeniería',
+    'electricista':'Ingeniería Eléctrica y Electrónica',
+    'materials science and engineering':'Ingeniería de Sistemas y Computación',
+    'materials engineering':'Ingeniería de Sistemas y Computación',
+    }
+    
+
+    df['CAMPO_ESTUDIO'] = df['CAMPO_ESTUDIO'].apply(mapeo_carrera)
+    df['CAMPO_ESTUDIO'].replace(replacement_dict, inplace=True)
+    
+
+    print(df['CAMPO_ESTUDIO'].value_counts().head(30))
+        
+    # For CAMPO_ESTUDIO
+    field_counts = df['CAMPO_ESTUDIO'].value_counts().reset_index()
+    field_counts.columns = ['CAMPO_ESTUDIO', 'Count']
+
+    plt.figure(figsize=(12, 8))
+    ax2 = sns.barplot(x='Count', y='CAMPO_ESTUDIO', data=field_counts.head(10))  # Show top 20 fields of study
+
+    # Adding annotations to each bar
+    for p in ax2.patches:
+        ax2.annotate(f'{int(p.get_width())}', (p.get_width(), p.get_y() + p.get_height() / 2),
+                    ha='left', va='center')
+
+    plt.title('Frecuencia de cada campo de estudio')
+    plt.xlabel('Conteo')
+    plt.ylabel('Campo de Estudio')
+    plt.show()
+
+
+    
+    '''
+    # For TITULO_OBTENIDO
+    title_counts = df['TITULO_OBTENIDO'].value_counts().reset_index()
+    title_counts.columns = ['TITULO_OBTENIDO', 'Count']
+
+    plt.figure(figsize=(12, 8))
+    ax1 = sns.barplot(x='Count', y='TITULO_OBTENIDO', data=title_counts.head(20))  # Show top 20 titles
+
+    # Adding annotations to each bar
+    for p in ax1.patches:
+        ax1.annotate(f'{int(p.get_width())}', (p.get_width(), p.get_y() + p.get_height() / 2),
+                    ha='left', va='center')
+
+    plt.title('Frequency of Each Title Obtained')
+    plt.xlabel('Count')
+    plt.ylabel('Title Obtained')
+    plt.show()
+    '''
+
+
 
 
 # Main Execution
@@ -372,8 +585,8 @@ if __name__ == "__main__":
     if dataframes_list:
         
         #estadistica_exploratoria_egresados(dataframes_list[0])
-        eda_universidad(dataframes_list[0])
-        #"print(dataframes_list[0]['UNIVERSIDAD'].value_counts())
+        #eda_universidad(dataframes_list[0])
+        print(dataframes_list[0].info())
         #print(dataframes_list[0].head())
 
         
