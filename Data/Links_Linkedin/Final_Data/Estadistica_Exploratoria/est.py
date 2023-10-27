@@ -293,7 +293,7 @@ def crear_mapa(df):
     # Merge the GeoDataFrame with your DataFrame
     merged = world.set_index('name').join(df.set_index('LUGAR_VIVE'))
 
-    # Set up the plot
+    # Set up the plots
     fig, ax = plt.subplots(1, figsize=(15, 10))
 
     # Plot boundaries
