@@ -22,7 +22,7 @@ def get_dfs():
     list_df = [file for file in os.listdir(path_dataframes) if file.endswith('.pkl')]
     dataframes_list = []
     
-    for df in list_df[1:2]:
+    for df in list_df[0:1]:
         df_temp = pd.read_pickle(os.path.join(path_dataframes, df))
         dataframes_list.append(df_temp)
         
@@ -222,9 +222,9 @@ def estadistica_exploratoria_egresados(df):
     #crear_mapa(location_counts)
     
     df_trabajos = categorizar_trabajos(df['CURRENTLY_JOB'],df_completo=df,custom_categories=None)
-    print(df_trabajos)
-    creacion_barras_simple(df_trabajos,df_trabajos['Category'],df_trabajos['Count'])
-
+    
+    #creacion_barras_simple(df_trabajos,df_trabajos['Category'],df_trabajos['Count'])
+ 
 def categorizar_trabajos(df_serie, df_completo ,custom_categories=None):
     df = pd.DataFrame(data = {'CURRENTLY_JOB': df_serie})
     
@@ -314,7 +314,6 @@ def crear_mapa(df):
     # Show the plot
     plt.show()
 
-
 def modify_2(df):
     indices_problematicos = df[df['PROGRAMA_PREGRADO'] == 'Otro'].index
 
@@ -338,8 +337,6 @@ def modify_2(df):
     with open(path_data + '/df_final_user.pkl','wb') as f :
         pickle.dump(df,f)
 
-
-
 def modify_df(df):
     df.loc[24, 'PROGRAMA_PREGRADO'] = 'ingeniería civil'
 
@@ -348,14 +345,36 @@ def modify_df(df):
     with open(path_data + '/df_final_user.pkl','wb') as f :
         pickle.dump(df,f)
 
+
+def eda_universidad(df):
+    university_counts = df['UNIVERSIDAD'].value_counts().reset_index()
+    university_counts.columns = ['UNIVERSIDAD', 'Count']
+
+    # Plotting
+    plt.figure(figsize=(12, 8))
+    ax = sns.barplot(x='Count', y='UNIVERSIDAD', data=university_counts.head(20))  # Show top 20 universities
+
+    # Adding annotations to each bar
+    for p in ax.patches:
+        ax.annotate(f'{int(p.get_width())}', (p.get_width(), p.get_y() + p.get_height() / 2),
+                    ha='left', va='center')
+
+    plt.title('Frequency of Each University')
+    plt.xlabel('Count')
+    plt.ylabel('University')
+    plt.show()
+
+
 # Main Execution
 if __name__ == "__main__":
     dataframes_list = get_dfs()
     
     if dataframes_list:
         
-        estadistica_exploratoria_egresados(dataframes_list[0])
-        #print(dataframes_list[0].iloc[0])
+        #estadistica_exploratoria_egresados(dataframes_list[0])
+        eda_universidad(dataframes_list[0])
+        #"print(dataframes_list[0]['UNIVERSIDAD'].value_counts())
+        #print(dataframes_list[0].head())
 
         
     else:
