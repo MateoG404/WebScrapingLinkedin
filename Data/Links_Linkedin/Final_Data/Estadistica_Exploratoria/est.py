@@ -348,20 +348,55 @@ def modify_df(df):
 def mapeo_carrera(field):
     field = unidecode(field.lower().strip())
     print(field)
-    if 'tecnologias' in field or 'software' in field or 'data'in field or 'java' in field or 'informacion' in field or 'information' in field:
+
+    if 'telecommunications' in field or 'computing' in field or 'systems' in field or 'tecnologias' in field or 'software' in field or 'data'in field or 'java' in field or 'informacion' in field or 'information' in field:
         return 'Ingeniería de Sistemas y Computación'
-    if 'datos' in field or 'computer'  in field or 'programacion'  in field or 'automatizacion' in field or 'informatica' in field or 'computador'  in field or 'informatics'  in field:
+    
+    if 'agricola' in field or 'environnement' in field:
+        return 'Ingeniería Agricola'
+
+    if 'chimique' in field or 'cosmetologia' in field: 
+        return 'Ingeniería Química'
+    
+    if 'datos' in field or 'telecomunicaciones' in field or 'computer'  in field or 'programacion'  in field or 'automatizacion' in field or 'informatica' in field or 'computador'  in field or 'informatics'  in field:
          return 'Ingeniería de Sistemas y Computación'
-    if 'industrial' in field or 'supply' in field or 'management' in field:
+    
+    if  'operations' in field or 'commerce'in field or 'industrial' in field or 'supply' in field or 'management' in field or 'industriel'in field:
         return 'Ingeniería Industrial'
-    if 'matematicas' in field or 'mathematics' in field:
+    
+    if 'matematicas' in field or 'mathematics' in field or 'statistics' in field:
         return 'Ciencias Puras'
-    if 'business' in field or 'administracion' in field:
+    
+    if 'marketing' in field or 'contabilidad' in field or  'finanzas' in field or 'business' in field or 'administracion' in field or 'economics' in field or 'gerencia' in field:
         return 'Administración de Empresas'
     
+    if 'artes' in field or 'arquitectura' in field:
+        return 'Artes'
+    
+    if 'geotecnica'in field or 'materiales' in field or 'hydraulique'  in field or 'civil' in field or ' hidraulicos' in field or 'structural' in field :
+        return 'Ingeniería Civil'
+    
+    if 'english' in field or 'idiomas' in field :
+        return 'Ciencias Humanas'
+    
+    if 'especializacion' in field or 'engineer' in field or 'adultos' in field or 'alimentos' in field or 'ingenierie' in field or 'incendios' in field or 'diplomado' in field or 'investigacion' in field: 
+        return 'Otras especializaciones ingeniería'
+
+    if 'renovables' in field :
+        return 'Ingeniería Eléctrica y Electrónica'
+
+    if  'protecciones' in field or 'mecatronica' in field or'control' in field or 'mechatronic' in field or 'mecanica' in field or 'process' in field:
+        return 'Ingeniería Mecatrónica y Mécanica'
+
+    if 'electricidad' in field:
+        return 'Ingeniería Eléctrica y Electrónica'
+    
+    
+
     return field
+
 def eda_universidad(df):
-    '''
+    
     
     university_counts = df['UNIVERSIDAD'].value_counts().reset_index()
     university_counts.columns = ['UNIVERSIDAD', 'Count']
@@ -379,7 +414,7 @@ def eda_universidad(df):
     plt.xlabel('Count')
     plt.ylabel('University')
     plt.show()
-    '''
+    
     # For CAMPO_ESTUDIO
     # Standardize the text and combine similar categories
     df['CAMPO_ESTUDIO'] = df['CAMPO_ESTUDIO'].apply(lambda x: unidecode(str(x).lower().strip()))#.str.strip().str.lower()
@@ -388,6 +423,7 @@ def eda_universidad(df):
     'ingenieria electronica':'Ingeniería Eléctrica y Electrónica',
     'ingenieria electrica': 'Ingeniería Eléctrica y Electrónica',
     'ingenieria':'Otras especializaciones ingeniería',
+    'no':'Otras especializaciones ingeniería',
     'ingenieria quimica': 'Ingeniería Química',
     'ingenieria civil/ geotecnia':'Ingeniería Civil',
     'mechatronics engineer':'Ingeniería Mecatrónica y Mécanica',
@@ -576,8 +612,6 @@ def eda_universidad(df):
     '''
 
 
-
-
 # Main Execution
 if __name__ == "__main__":
     dataframes_list = get_dfs()
@@ -585,8 +619,8 @@ if __name__ == "__main__":
     if dataframes_list:
         
         #estadistica_exploratoria_egresados(dataframes_list[0])
-        #eda_universidad(dataframes_list[0])
-        print(dataframes_list[0].info())
+        eda_universidad(dataframes_list[0])
+        #print(dataframes_list[0].info())
         #print(dataframes_list[0].head())
 
         
