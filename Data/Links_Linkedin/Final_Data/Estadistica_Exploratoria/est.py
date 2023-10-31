@@ -767,6 +767,59 @@ def lluvia_palabras_skills(df):
     plt.axis('off')
     plt.show()
 
+def lluvia_palabras_descripcion(df):
+
+
+    # Descargar los stopwords en caso de que no los tengas
+    nltk.download('stopwords')
+    from nltk.corpus import stopwords
+
+    # Combina todas las filas de la columna 'DESCRIPCION' en una sola cadena de texto
+    df = df[df['DESCRIPCION'].astype(str) != '[None]']
+    df = df[df['DESCRIPCION'].astype(str) != 'I']
+    text = ' '.join(str(row) for row in df['DESCRIPCION'].dropna())
+    print()
+    # Usa Counter para obtener la frecuencia de cada palabra
+    word_freq = Counter(text.split())
+
+    # Filtrado de palabras comunes o irrelevantes
+    stop_words = set(stopwords.words('spanish')).union(stopwords.words('english'))
+    for word in stop_words:
+        if word in word_freq:
+            del word_freq[word]
+    # Eliminar la palabra 'I' del contador
+    if 'I' in word_freq:
+        del word_freq['I']
+    # Obtener las palabras más comunes y sus frecuencias
+    
+    top_words = word_freq.most_common(10)
+    words, counts = zip(*top_words)
+    print(top_words)
+    # Creación del gráfico de barras
+    plt.figure(figsize=(15, 8))
+    bars = plt.bar(words, counts, color='skyblue')
+    plt.xlabel('Palabras')
+    plt.ylabel('Frecuencia')
+    plt.title('Las 10 palabras más comunes en DESCRIPCION')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    # Agrega etiquetas con el valor exacto sobre cada barra
+    for bar in bars:
+        yval = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2, yval + 5, round(yval,2), ha='center', va='bottom', color='black')
+
+    plt.show()
+
+    # Código para la nube de palabras
+    font_path = "/home/user/Desktop/MateoCodes/WebScrapingLinkedin/Documentation/arial.ttf"
+    wordcloud = WordCloud(font_path=font_path, background_color='white', width=800, height=400).generate_from_frequencies(word_freq)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.show()
+
+   
 # Main Execution
 if __name__ == "__main__":
     dataframes_list = get_dfs()
@@ -775,6 +828,8 @@ if __name__ == "__main__":
         
         #estadistica_exploratoria_egresados(dataframes_list[0])
         print(dataframes_list[1].info())
+        print(dataframes_list[1]['DESCRIPCION'])
+        #lluvia_palabras_descripcion(dataframes_list[1])
         #lluvia_palabras_skills(dataframes_list[1])
         #grafica_idiomas(dataframes_list[3])
 
