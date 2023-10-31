@@ -1,4 +1,5 @@
 import pandas as pd
+from collections import Counter
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -715,6 +716,56 @@ def grafica_idiomas(df):
 
 
 
+def lluvia_palabras_skills(df):
+
+    # Combina todas las filas de la columna 'SKILLS' en una sola cadena de texto
+    text = ' '.join(str(row) for row in df['SKILLS'].dropna())
+
+    # Usa Counter para obtener la frecuencia de cada palabra
+    word_freq = Counter(text.split())
+
+    # Filtrado de palabras comunes o irrelevantes (puedes ajustar esta lista según tus necesidades)
+    stopwords = ["de", "y", "en", "la", "el", "None"] # Ejemplo de palabras a filtrar
+    for word in stopwords:
+        if word in word_freq:
+            del word_freq[word]
+
+    # Obtener las habilidades más comunes y sus frecuencias
+
+    # Obtener las habilidades más comunes y sus frecuencias
+    top_skills = word_freq.most_common(10)
+    skills, counts = zip(*top_skills)
+
+    # Creación del gráfico de barras
+    plt.figure(figsize=(15, 8))
+    bars = plt.bar(skills, counts, color='skyblue')
+    plt.xlabel('Habilidades')
+    plt.ylabel('Frecuencia')
+    plt.title('Las 10 habilidades más comunes')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    # Agrega etiquetas con el valor exacto sobre cada barra
+    for bar in bars:
+        yval = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2, yval + 5, round(yval,2), ha='center', va='bottom', color='black')
+
+    plt.show()
+
+    # Código para la nube de palabras
+    font_path = "/home/user/Desktop/MateoCodes/WebScrapingLinkedin/Documentation/arial.ttf"
+    wordcloud
+
+
+
+
+    # El resto del código para visualizar la nube de palabras
+    font_path = "/home/user/Desktop/MateoCodes/WebScrapingLinkedin/Documentation/arial.ttf"
+    wordcloud = WordCloud(font_path=font_path, background_color='white', width=800, height=400).generate_from_frequencies(word_freq)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.show()
 
 # Main Execution
 if __name__ == "__main__":
@@ -723,8 +774,9 @@ if __name__ == "__main__":
     if dataframes_list:
         
         #estadistica_exploratoria_egresados(dataframes_list[0])
-        print(dataframes_list[3].info())
-        grafica_idiomas(dataframes_list[3])
+        print(dataframes_list[1].info())
+        #lluvia_palabras_skills(dataframes_list[1])
+        #grafica_idiomas(dataframes_list[3])
 
         #campo_estudio(dataframes_list[0])
         #eda_universidad(dataframes_list[0])
