@@ -3,6 +3,7 @@ from collections import Counter
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+from wordcloud import WordCloud, STOPWORDS
 from wordcloud import WordCloud
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
@@ -24,6 +25,7 @@ def get_dfs():
     dataframes_list = []
     
     for df in list_df:
+        print(df)
         df_temp = pd.read_pickle(os.path.join(path_dataframes, df))
         dataframes_list.append(df_temp)
         
@@ -833,7 +835,47 @@ def tamaño_empresas_grf(df):
     plt.tight_layout()
 
     plt.show()
-   
+
+def contratacion(df,value):
+    df = df.dropna(subset=[value])
+    df = df[df[value] != 'Unknown']
+    df = df[df[value] != 'None']
+    # Convertir la columna a tipo int
+    df[value] = df[value].astype(int)
+
+    # Crear un histograma
+    plt.figure(figsize=(10,6))
+    df[value].value_counts().sort_index().plot(kind='bar')
+    plt.title('Distribución de Años de Contratación de Egresados')
+    plt.xlabel('Año')
+    plt.ylabel('Número de Egresados')
+    plt.grid(axis='y')
+
+    plt.show()
+
+def graph_descripcion_trabajo(df,value):
+
+
+    # Filtrar y concatenar todas las descripciones en una sola cadena
+    text = ' '.join([str(desc) for desc in df[value] if desc is not None and desc is not 'NaN' and desc != 'None'])
+
+    # Lista de palabras comunes (stop words) en inglés
+    english_stopwords = set(STOPWORDS)
+
+    # Lista de palabras comunes (stop words) en español
+    spanish_stopwords = set(["de", "la", "el", "en", "y", "a", "que", "del", "para", "por", "con", "una", "es", "los", "se", "un", "NaN", "None"])
+
+    # Combinar las listas de palabras comunes
+    all_stopwords = english_stopwords.union(spanish_stopwords)
+
+    # Crear y generar la gráfica de lluvia de palabras
+    wordcloud = WordCloud(stopwords=all_stopwords, background_color="white", width=800, height=400).generate(text)
+
+    # Mostrar la imagen
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")
+    plt.show()
 # Main Execution
 if __name__ == "__main__":
     dataframes_list = get_dfs()
@@ -842,8 +884,10 @@ if __name__ == "__main__":
         
         #estadistica_exploratoria_egresados(dataframes_list[0])
         print(dataframes_list[2].info())
-        print(dataframes_list[2]['TAMANO_EMPRESA_ACTUAL'])
-        tamaño_empresas_grf(dataframes_list[2])
+        #print(dataframes_list[2]['INDUSTRY_COMPANY'])
+        #graph_descripcion_trabajo(dataframes_list[2],'DESCRICION_TRABAJO_ACTUAL')
+        #contratacion(dataframes_list[2],'FINALIZACION_AÑO')
+        #tamaño_empresas_grf(dataframes_list[2])
         #lluvia_palabras_descripcion(dataframes_list[1])
         #lluvia_palabras_skills(dataframes_list[1])
         #grafica_idiomas(dataframes_list[3])
