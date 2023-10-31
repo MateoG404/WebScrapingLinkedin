@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "red", "id": "1057596290", "label": "1057596290", "shape": "dot", "title": "1057596290"}, {"color": "blue", "id": "Universidad Nacional de Colombia", "label": "Universidad Nacional de Colombia", "shape": "dot", "title": "Universidad Nacional de Colombia"}, {"color": "green", "id": "Ingenier\u00eda Agr\u00edcola", "label": "Ingenier\u00eda Agr\u00edcola", "shape": "dot", "title": "Ingenier\u00eda Agr\u00edcola"}, {"color": "yellow", "id": "Trace.Coffee", "label": "Trace.Coffee", "shape": "dot", "title": "Ingenier\u00eda Agr\u00edcola"}, {"color": "red", "id": "1032479878", "label": "1032479878", "shape": "dot", "title": "1032479878"}, {"color": "blue", "id": "Universidad de La Salle", "label": "Universidad de La Salle", "shape": "dot", "title": "Universidad de La Salle"}, {"color": "green", "id": "Ingenier\u00eda Civil", "label": "Ingenier\u00eda Civil", "shape": "dot", "title": "Ingenier\u00eda Civil"}, {"color": "yellow", "id": "Dise\u00f1o Urbano Studio S.A.S.", "label": "Dise\u00f1o Urbano Studio S.A.S.", "shape": "dot", "title": "Ingenier\u00eda Civil"}, {"color": "red", "id": "1019147248", "label": "1019147248", "shape": "dot", "title": "1019147248"}, {"color": "blue", "id": "EF Executive Language Institute", "label": "EF Executive Language Institute", "shape": "dot", "title": "EF Executive Language Institute"}, {"color": "green", "id": "Ingenier\u00eda de Sistemas y Computaci\u00f3n", "label": "Ingenier\u00eda de Sistemas y Computaci\u00f3n", "shape": "dot", "title": "Ingenier\u00eda de Sistemas y Computaci\u00f3n"}, {"color": "yellow", "id": "Vive Travel", "label": "Vive Travel", "shape": "dot", "title": "Ingenier\u00eda de Sistemas y Computaci\u00f3n"}, {"color": "red", "id": "1032461717", "label": "1032461717", "shape": "dot", "title": "1032461717"}, {"color": "green", "id": "Ingenier\u00eda Electrica", "label": "Ingenier\u00eda Electrica", "shape": "dot", "title": "Ingenier\u00eda Electrica"}, {"color": "yellow", "id": "SNC-Lavalin", "label": "SNC-Lavalin", "shape": "dot", "title": "Ingenier\u00eda Electrica"}, {"color": "red", "id": "1018449795", "label": "1018449795", "shape": "dot", "title": "1018449795"}, {"color": "yellow", "id": "ScotiaTech", "label": "ScotiaTech", "shape": "dot", "title": "Ingenier\u00eda de Sistemas y Computaci\u00f3n"}, {"color": "red", "id": "1012408698", "label": "1012408698", "shape": "dot", "title": "1012408698"}, {"color": "blue", "id": "Universidad de La Sabana", "label": "Universidad de La Sabana", "shape": "dot", "title": "Universidad de La Sabana"}, {"color": "yellow", "id": "Nacional de Transformadores SAS", "label": "Nacional de Transformadores SAS", "shape": "dot", "title": "Ingenier\u00eda Electrica"}, {"color": "red", "id": "1013649943", "label": "1013649943", "shape": "dot", "title": "1013649943"}, {"color": "blue", "id": "Fundaci\u00f3n Universitaria Panamericana", "label": "Fundaci\u00f3n Universitaria Panamericana", "shape": "dot", "title": "Fundaci\u00f3n Universitaria Panamericana"}, {"color": "yellow", "id": "Lean Solutions Group", "label": "Lean Solutions Group", "shape": "dot", "title": "Ingenier\u00eda de Sistemas y Computaci\u00f3n"}, {"color": "red", "id": "1033704675", "label": "1033704675", "shape": "dot", "title": "1033704675"}, {"color": "yellow", "id": "TRANSMILENIO", "label": "TRANSMILENIO", "shape": "dot", "title": "Ingenier\u00eda Civil"}, {"color": "red", "id": "1019075259", "label": "1019075259", "shape": "dot", "title": "1019075259"}, {"color": "yellow", "id": "Universidad Cat\u00f3lica de Colombia", "label": "Universidad Cat\u00f3lica de Colombia", "shape": "dot", "title": "Ingenier\u00eda Civil"}, {"color": "red", "id": "1012384240", "label": "1012384240", "shape": "dot", "title": "1012384240"}, {"color": "yellow", "id": "Ingenieria yGeoriesgos IGR SAS", "label": "Ingenieria yGeoriesgos IGR SAS", "shape": "dot", "title": "Ingenier\u00eda Civil"}]);
+                  edges = new vis.DataSet([{"from": "1057596290", "to": "Universidad Nacional de Colombia"}, {"from": "1057596290", "to": "Ingenier\u00eda Agr\u00edcola"}, {"from": "1057596290", "to": "Trace.Coffee"}, {"from": "1032479878", "to": "Universidad de La Salle"}, {"from": "1032479878", "to": "Ingenier\u00eda Civil"}, {"from": "1032479878", "to": "Dise\u00f1o Urbano Studio S.A.S."}, {"from": "1019147248", "to": "EF Executive Language Institute"}, {"from": "1019147248", "to": "Ingenier\u00eda de Sistemas y Computaci\u00f3n"}, {"from": "1019147248", "to": "Vive Travel"}, {"from": "1032461717", "to": "Universidad Nacional de Colombia"}, {"from": "1032461717", "to": "Ingenier\u00eda Electrica"}, {"from": "1032461717", "to": "SNC-Lavalin"}, {"from": "1018449795", "to": "Universidad Nacional de Colombia"}, {"from": "1018449795", "to": "Ingenier\u00eda de Sistemas y Computaci\u00f3n"}, {"from": "1018449795", "to": "ScotiaTech"}, {"from": "1012408698", "to": "Universidad de La Sabana"}, {"from": "1012408698", "to": "Ingenier\u00eda Electrica"}, {"from": "1012408698", "to": "Nacional de Transformadores SAS"}, {"from": "1013649943", "to": "Fundaci\u00f3n Universitaria Panamericana"}, {"from": "1013649943", "to": "Ingenier\u00eda de Sistemas y Computaci\u00f3n"}, {"from": "1013649943", "to": "Lean Solutions Group"}, {"from": "1033704675", "to": "Universidad Nacional de Colombia"}, {"from": "1033704675", "to": "Ingenier\u00eda Civil"}, {"from": "1033704675", "to": "TRANSMILENIO"}, {"from": "1019075259", "to": "Universidad Nacional de Colombia"}, {"from": "1019075259", "to": "Ingenier\u00eda Civil"}, {"from": "1019075259", "to": "Universidad Cat\u00f3lica de Colombia"}, {"from": "1012384240", "to": "Universidad Nacional de Colombia"}, {"from": "1012384240", "to": "Ingenier\u00eda Civil"}, {"from": "1012384240", "to": "Ingenieria yGeoriesgos IGR SAS"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
