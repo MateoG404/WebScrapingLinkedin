@@ -692,6 +692,7 @@ def map_language(language):
         return 'Italiano'
     else:
         return 'Otro'
+
 def grafica_idiomas(df):
 
     df['LANGUAGE_MAPEADO'] = df['LANGUAGE'].apply( map_language)
@@ -713,8 +714,6 @@ def grafica_idiomas(df):
     plt.ylabel('Cantidad')
     plt.title('Distribución de Niveles por Idioma')
     plt.show()
-
-
 
 def lluvia_palabras_skills(df):
 
@@ -819,6 +818,21 @@ def lluvia_palabras_descripcion(df):
     plt.axis('off')
     plt.show()
 
+def tamaño_empresas_grf(df):
+    df['TAMANO_EMPRESA_ACTUAL'] = df['TAMANO_EMPRESA_ACTUAL'].dropna()
+    # Contar la frecuencia de cada rango
+    value_counts = df['TAMANO_EMPRESA_ACTUAL'].value_counts()
+    value_counts = value_counts[1:]
+    # Crear el gráfico de barras
+    value_counts.plot(kind='bar', color='skyblue')
+
+    plt.title('Distribución de Rangos')
+    plt.xlabel('Rango')
+    plt.ylabel('Cantidad')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    plt.show()
    
 # Main Execution
 if __name__ == "__main__":
@@ -827,8 +841,9 @@ if __name__ == "__main__":
     if dataframes_list:
         
         #estadistica_exploratoria_egresados(dataframes_list[0])
-        print(dataframes_list[1].info())
-        print(dataframes_list[1]['DESCRIPCION'])
+        print(dataframes_list[2].info())
+        print(dataframes_list[2]['TAMANO_EMPRESA_ACTUAL'])
+        tamaño_empresas_grf(dataframes_list[2])
         #lluvia_palabras_descripcion(dataframes_list[1])
         #lluvia_palabras_skills(dataframes_list[1])
         #grafica_idiomas(dataframes_list[3])
