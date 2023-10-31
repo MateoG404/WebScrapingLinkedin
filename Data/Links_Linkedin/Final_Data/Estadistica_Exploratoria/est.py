@@ -22,7 +22,7 @@ def get_dfs():
     list_df = [file for file in os.listdir(path_dataframes) if file.endswith('.pkl')]
     dataframes_list = []
     
-    for df in list_df[0:1]:
+    for df in list_df:
         df_temp = pd.read_pickle(os.path.join(path_dataframes, df))
         dataframes_list.append(df_temp)
         
@@ -191,7 +191,11 @@ def estadistica_exploratoria_egresados(df):
 
     df['PROGRAMA_PREGRADO'] = df['PROGRAMA_PREGRADO'].astype(str).str.strip().str.lower().str.replace('\n', '')
 
-    df['PROGRAMA_PREGRADO'] = df['PROGRAMA_PREGRADO'].apply(limpiar_texto).apply(mapeo_carrera)
+    df['PROGRAMA_PREGRADO'] = df['PROGRAMA_PREGRADO'].apply(limpiar_texto)
+    
+    df['PROGRAMA_PREGRADO'] = df['PROGRAMA_PREGRADO'].apply(mapeo_carrera)
+    print("aaaa")
+    print(df['CAMPO_ESTUDIO_antes_mapeo'][10:])
 
     grouped_df = df.groupby('PROGRAMA_PREGRADO').size().reset_index(name='Conteo')
 
@@ -418,6 +422,9 @@ def eda_universidad(df):
     # For CAMPO_ESTUDIO
     # Standardize the text and combine similar categories
     df['CAMPO_ESTUDIO'] = df['CAMPO_ESTUDIO'].apply(lambda x: unidecode(str(x).lower().strip()))#.str.strip().str.lower()
+    
+    df['CAMPO_ESTUDIO_antes_mapeo'] = df['CAMPO_ESTUDIO'].copy()
+    
 
     replacement_dict = {
     'ingenieria electronica':'Ingeniería Eléctrica y Electrónica',
@@ -566,7 +573,6 @@ def eda_universidad(df):
     'materials engineering':'Ingeniería de Sistemas y Computación',
     }
     
-
     df['CAMPO_ESTUDIO'] = df['CAMPO_ESTUDIO'].apply(mapeo_carrera)
     df['CAMPO_ESTUDIO'].replace(replacement_dict, inplace=True)
     
@@ -612,6 +618,104 @@ def eda_universidad(df):
     '''
 
 
+def campo_estudio(df):
+
+    # Contar la frecuencia de cada campo de estudio
+    campo_estudio_counts = df['CAMPO_ESTUDIO'].value_counts()
+    resultados_artificial = campo_estudio_counts.filter(like='emprendimiento')
+    print(resultados_artificial)
+
+    # Inteligencia artificial & Data Science 49
+    # Gestión de proyectos 105
+    # Ingeniería estructural 47
+    # Ciencia y tecnología de los alimentos  38
+    # Desarrollo web / mobile 80
+    # Emprendimiento/Estudios sobre emprendimiento 13
+    # Mechatronics, Robotics, and Automation Engineerin 83
+    
+
+    # Crear un DataFrame
+    data = {
+        'Campo': ['Inteligencia artificial & Data Science', 'Gestión de proyectos', 'Ingeniería estructural', 
+                'Ciencia y tecnología de los alimentos', 'Desarrollo web / mobile', 
+                'Emprendimiento/Estudios sobre emprendimiento', 'Mechatronics, Robotics, and Automation Engineering'],
+        'Cantidad': [49, 105, 47, 38, 80, 13, 83]
+    }
+
+    df = pd.DataFrame(data)
+    # Gráfica
+    plt.figure(figsize=(12, 8))
+    bars = plt.barh(df['Campo'], df['Cantidad'], color='purple')
+
+    # Agregar etiquetas de número
+    for bar in bars:
+        plt.text(bar.get_width() - 3, bar.get_y() + bar.get_height()/2 - 0.1, str(bar.get_width()), va='center', ha='left', color='white')
+
+    plt.xlabel('Cantidad')
+    plt.ylabel('Campo')
+    plt.title('Distribución de Campos de Especialización')
+    plt.show()
+    
+    # Gestión de la construcción
+    
+
+    # Obtener los 10 campos de estudio más comunes para enfocar la visualización
+    '''
+    
+    top_10_campo_estudio = campo_estudio_counts.nlargest(10)
+
+    # Crear la gráfica
+    plt.figure(figsize=(12, 6))
+    top_10_campo_estudio.plot(kind='bar', color='skyblue')
+    plt.title("Top 10 Campos de Estudio entre Egresados")
+    plt.xlabel("Campo de Estudio")
+    plt.ylabel("Número de Egresados")
+    plt.xticks(rotation=45)
+    plt.show()
+    '''
+
+# Función de mapeo
+def map_language(language):
+    language = unidecode(language).lower()  # Convertir a minúscula
+    if 'ingles' in language or 'english' in language or 'anglais' in language or 'englisch' in language:
+        return 'Inglés'
+    elif 'espanol' in language or 'spanish' in language or 'espagnol' in language or 'spanisch' in language or 'espanhol' in language or 'spagnolo' in language:
+        return 'Español'
+    elif 'frances' in language or 'french' in language or 'français' in language or 'französisch' in language or 'francese' in language or 'francais' in language or 'franzosisch' in language: 
+        return 'Frances'
+    elif 'aleman' in language or 'german' in language or 'deutsch' in language or 'allemand'  in language or 'dutch' in language:
+        return 'Alemán'
+    elif 'portugiesisch' in language or 'portugues' in language or 'portugais'in language or 'portugués' in language:
+        return 'Portugues'
+    elif 'italiano'in language or 'italienisch' in language or 'italian' in language:
+        return 'Italiano'
+    else:
+        return 'Otro'
+def grafica_idiomas(df):
+
+    df['LANGUAGE_MAPEADO'] = df['LANGUAGE'].apply( map_language)
+    # Encontrar los índices de las filas donde 'LANGUAGE_MAPEADO' es 'Español'
+    indices_to_drop = df[df['LANGUAGE_MAPEADO'] == 'Español'].index
+
+    # Eliminar estas filas del DataFrame
+    df.drop(indices_to_drop, inplace=True)
+
+    #df.drop(df[(df['precio_unitario'] >400) & (df['precio_unitario'] < 600)].index, inplace=True)
+
+    # Crear una tabla de contingencia para contar la frecuencia de cada combinación de 'LANGUAGE' y 'NIVEL'
+    print(df['LANGUAGE_MAPEADO'].value_counts())
+    contingency_table = pd.crosstab(df['LANGUAGE_MAPEADO'], df['NIVEL'])
+
+    # Gráfico de barras apiladas
+    contingency_table.plot(kind='bar', stacked=True, figsize=(10, 7))
+    plt.xlabel('Idioma')
+    plt.ylabel('Cantidad')
+    plt.title('Distribución de Niveles por Idioma')
+    plt.show()
+
+
+
+
 # Main Execution
 if __name__ == "__main__":
     dataframes_list = get_dfs()
@@ -619,7 +723,11 @@ if __name__ == "__main__":
     if dataframes_list:
         
         #estadistica_exploratoria_egresados(dataframes_list[0])
-        eda_universidad(dataframes_list[0])
+        print(dataframes_list[3].info())
+        grafica_idiomas(dataframes_list[3])
+
+        #campo_estudio(dataframes_list[0])
+        #eda_universidad(dataframes_list[0])
         #print(dataframes_list[0].info())
         #print(dataframes_list[0].head())
 
