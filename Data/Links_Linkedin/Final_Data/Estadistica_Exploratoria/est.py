@@ -178,7 +178,7 @@ def creacion_barras_simple(df,x,y,hue = None):
     plt.figure(figsize=(15, 8))
     ax = sns.barplot(x=x, y=y, hue=hue, data=df)
     plt.xticks(rotation=45)
-    plt.title('Conteo de Personas por Carrera y Sexo')
+    plt.title('Porcentaje de Campos empleabilidad egresados')
 
     # Añadir etiquetas numéricas
     for p in ax.patches:
@@ -192,13 +192,14 @@ def estadistica_exploratoria_egresados(df):
     # Normalizar los datos para programa_egresado
     
 
+    
     df['PROGRAMA_PREGRADO'] = df['PROGRAMA_PREGRADO'].astype(str).str.strip().str.lower().str.replace('\n', '')
 
     df['PROGRAMA_PREGRADO'] = df['PROGRAMA_PREGRADO'].apply(limpiar_texto)
     
     df['PROGRAMA_PREGRADO'] = df['PROGRAMA_PREGRADO'].apply(mapeo_carrera)
     print("aaaa")
-    print(df['CAMPO_ESTUDIO_antes_mapeo'][10:])
+    #print(df['CAMPO_ESTUDIO_antes_mapeo'][10:])
 
     grouped_df = df.groupby('PROGRAMA_PREGRADO').size().reset_index(name='Conteo')
 
@@ -218,20 +219,52 @@ def estadistica_exploratoria_egresados(df):
     location_counts = df['LUGAR_VIVE'].value_counts().reset_index()
     location_counts.columns = ['LUGAR_VIVE', 'Conteo']
 
+    print(location_counts)
     
     # Creación de plots
     #creacion_plots(location_counts)
 
-    #creacion_barras(grouped_sex,'PROGRAMA_PREGRADO','Conteo','SEXO')
+    creacion_barras(grouped_sex,'PROGRAMA_PREGRADO','Conteo','SEXO')
     #print(df['LUGAR_VIVE'])
     
     #creacion_plots(location_counts)
     #crear_mapa(location_counts)
+
+    
     
     df_trabajos = categorizar_trabajos(df['CURRENTLY_JOB'],df_completo=df,custom_categories=None)
+        # Suponiendo que df_trabajos ya tiene las categorías y los conteos
+        
+    # Suponiendo que df_trabajos ya tiene las categorías y los conteos
+    total_count = df_trabajos['Count'].sum() - df_trabajos[df_trabajos['Category'] == 'Other']['Count'].iloc[0]
+    print(total_count)
     
+    # Calcular porcentajes con precisión de dos decimales
+    df_trabajos['Percentage'] = ((df_trabajos['Count'] / total_count) * 100).round(2)
+
+    # Eliminar la categoría 'Other'
+    df_trabajos = df_trabajos[df_trabajos['Category'] != 'Other']
+    print(df_trabajos)
+    creacion_barras_simple2(df_trabajos, df_trabajos['Category'], df_trabajos['Percentage'])
     #creacion_barras_simple(df_trabajos,df_trabajos['Category'],df_trabajos['Count'])
- 
+
+ # Función para crear una gráfica de barras simple
+
+def creacion_barras_simple2(df, categories, values, ylabel='Porcentaje'):
+
+    plt.figure(figsize=(10, 8))
+    bars = plt.bar(categories, values)
+    plt.xlabel('Categoría')
+    plt.ylabel(ylabel)
+    plt.title('Porcentaje de Campos empleabilidad egresados')
+    plt.xticks(rotation=90)  # Rota las etiquetas si son muy largas
+    
+    # Añade las etiquetas de porcentajes con el símbolo % en cada barra
+    for bar in bars:
+        yval = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2.0, yval, f"{yval}%", va='bottom', ha='center')  # Formato con símbolo %
+
+    plt.show()
 def categorizar_trabajos(df_serie, df_completo ,custom_categories=None):
     df = pd.DataFrame(data = {'CURRENTLY_JOB': df_serie})
     
@@ -404,24 +437,32 @@ def mapeo_carrera(field):
 
 def eda_universidad(df):
     
-    
     university_counts = df['UNIVERSIDAD'].value_counts().reset_index()
     university_counts.columns = ['UNIVERSIDAD', 'Count']
 
-    # Plotting
+    # Excluimos la 'Universidad Nacional De Colombia' del conteo.
+    university_counts = university_counts[university_counts['UNIVERSIDAD'] != 'Universidad Nacional de Colombia']
+    #university_counts = university_counts[university_counts['UNIVERSIDAD'] != 'Servicio Nacional de Aprendizaje (SENA)']
+    print(university_counts)
+    # Calculamos el total de las cuentas después de excluir la Universidad Nacional De Colombia.
+    total_counts = university_counts['Count'].sum()
+
+    # Calculamos el porcentaje que representa cada universidad.
+    university_counts['Percentage'] = (university_counts['Count'] / total_counts) * 100
+    #print(university_counts)
+    # Graficamos solo las 20 universidades más frecuentes.
     plt.figure(figsize=(12, 8))
-    ax = sns.barplot(x='Count', y='UNIVERSIDAD', data=university_counts.head(20))  # Show top 20 universities
+    ax = sns.barplot(x='Percentage', y='UNIVERSIDAD', data=university_counts.head(20),palette='Blues_d')
 
-    # Adding annotations to each bar
+    # Añadimos anotaciones a cada barra para mostrar el porcentaje.
     for p in ax.patches:
-        ax.annotate(f'{int(p.get_width())}', (p.get_width(), p.get_y() + p.get_height() / 2),
-                    ha='left', va='center')
+        ax.annotate(f'{p.get_width():.2f}%', (p.get_width(), p.get_y() + p.get_height() / 2), ha='left', va='center')
 
-    plt.title('Frequency of Each University')
-    plt.xlabel('Count')
+    plt.title('Porcentaje de universidades donde se realizan los posgrados excluidos la UNAL')
+    plt.xlabel('Percentage')
     plt.ylabel('University')
     plt.show()
-    
+
     # For CAMPO_ESTUDIO
     # Standardize the text and combine similar categories
     df['CAMPO_ESTUDIO'] = df['CAMPO_ESTUDIO'].apply(lambda x: unidecode(str(x).lower().strip()))#.str.strip().str.lower()
@@ -620,7 +661,6 @@ def eda_universidad(df):
     plt.show()
     '''
 
-
 def campo_estudio(df):
 
     # Contar la frecuencia de cada campo de estudio
@@ -782,9 +822,15 @@ def lluvia_palabras_descripcion(df):
     print()
     # Usa Counter para obtener la frecuencia de cada palabra
     word_freq = Counter(text.split())
+    # Lista de palabras adicionales para filtrar
+    additional_stopwords = {'Colombia,','ingeniería','Colombia','engineer','sector','Engineer','trabajo','capacidad','years','Colombia','años','skills','universidad', 'ingeniero', 'ingenieria', 'engineering','[Ingeniero','Nacional','Universidad','experiencia','experience','proyectos'} # añade palabras según sea necesario
 
+    
     # Filtrado de palabras comunes o irrelevantes
     stop_words = set(stopwords.words('spanish')).union(stopwords.words('english'))
+    
+    # Unir palabras adicionales con las palabras vacías existentes
+    stop_words = stop_words.union(additional_stopwords)
     for word in stop_words:
         if word in word_freq:
             del word_freq[word]
@@ -810,7 +856,7 @@ def lluvia_palabras_descripcion(df):
         yval = bar.get_height()
         plt.text(bar.get_x() + bar.get_width()/2, yval + 5, round(yval,2), ha='center', va='bottom', color='black')
 
-    plt.show()
+    #plt.show()
 
     # Código para la nube de palabras
     font_path = "/home/user/Desktop/MateoCodes/WebScrapingLinkedin/Documentation/arial.ttf"
@@ -840,16 +886,27 @@ def contratacion(df,value):
     df = df.dropna(subset=[value])
     df = df[df[value] != 'Unknown']
     df = df[df[value] != 'None']
-    # Convertir la columna a tipo int
+    df = df[df[value] != '1973']
+    df = df[df[value] != '1990']
     df[value] = df[value].astype(int)
+    df = df[df[value] > 2014]  # Filtrar los datos para incluir solo después de 2014
+
+    # Calcular el número de ocurrencias de cada año y convertirlo a porcentaje
+    value_counts = df[value].value_counts(normalize=True).sort_index() * 100
 
     # Crear un histograma
-    plt.figure(figsize=(10,6))
-    df[value].value_counts().sort_index().plot(kind='bar')
-    plt.title('Distribución de Años de Contratación de Egresados')
+    plt.figure(figsize=(10, 6))
+    bars = value_counts.plot(kind='bar')
+
+    plt.title('Distribución de Años de Contratación de Egresados (después de 2014)')
     plt.xlabel('Año')
-    plt.ylabel('Número de Egresados')
+    plt.ylabel('Porcentaje de Egresados (%)')
     plt.grid(axis='y')
+
+    # Agregar etiquetas de porcentaje en las barras
+    for bar in bars.patches:
+        bars.annotate(f'{bar.get_height():.2f}%', (bar.get_x() + bar.get_width() / 2, bar.get_height()),
+                    ha='center', va='bottom')
 
     plt.show()
 
@@ -876,17 +933,19 @@ def graph_descripcion_trabajo(df,value):
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
     plt.show()
+
 # Main Execution
 if __name__ == "__main__":
     dataframes_list = get_dfs()
-    
+    for i in dataframes_list:
+        print(i.info())
     if dataframes_list:
         
-        #estadistica_exploratoria_egresados(dataframes_list[0])
-        print(dataframes_list[2].info())
+        #estadistica_exploratoria_egresados(dataframes_list[1])
+        #print(dataframes_list[1].info())
         #print(dataframes_list[2]['INDUSTRY_COMPANY'])
         #graph_descripcion_trabajo(dataframes_list[2],'DESCRICION_TRABAJO_ACTUAL')
-        #contratacion(dataframes_list[2],'FINALIZACION_AÑO')
+        contratacion(dataframes_list[2],'FINALIZACION_AÑO')
         #tamaño_empresas_grf(dataframes_list[2])
         #lluvia_palabras_descripcion(dataframes_list[1])
         #lluvia_palabras_skills(dataframes_list[1])
