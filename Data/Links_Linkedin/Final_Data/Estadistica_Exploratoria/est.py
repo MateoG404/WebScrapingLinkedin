@@ -17,6 +17,13 @@ import geopandas as gpd
 import pickle
 import re
 
+custom_palette = [(187/255, 213/255, 49/255),   # Verde
+                  (31/255, 107/255, 170/255),   # Azul claro
+                  (24/255, 47/255, 88/255),   # Azul oscuro
+                  (94/255, 35/255, 99/255)] # Morado
+
+
+
 def get_dfs():
     # Open the different DataFrames
     path_dataframes = os.path.abspath(os.path.join(os.getcwd(), "..", "Preprocessing_Data"))
@@ -150,9 +157,24 @@ def mapeo_location(valor):
     
     return valor#.capitalize()#.replace(" ","")
 
-def creacion_barras(df,x,y,hue= None):
+def creacion_barras(df, x, y, hue=None):
+    # Definir la paleta de colores personalizada
+    
+    custom_palette = [(187/255, 213/255, 49/255),   # Verde
+                    (31/255, 107/255, 170/255),   # Azul claro
+                    (24/255, 47/255, 88/255),   # Azul oscuro
+                    (94/255, 35/255, 99/255)] # Morado
+
+
+
     plt.figure(figsize=(15, 8))
-    ax = sns.barplot(x=x, y=y, hue=hue, data=df)
+    if hue:
+        # Usar la paleta personalizada con hue
+        ax = sns.barplot(x=x, y=y, hue=hue, data=df, palette=custom_palette)
+    else:
+        # Usar la paleta personalizada sin hue
+        ax = sns.barplot(x=x, y=y, data=df, palette=custom_palette[:len(df[x].unique())])
+
     plt.xticks(rotation=45)
     plt.title('Conteo de Personas por Carrera y Sexo')
 
@@ -161,7 +183,6 @@ def creacion_barras(df,x,y,hue= None):
         ax.annotate(f'{int(p.get_height())}', (p.get_x() + p.get_width() / 2., p.get_height()),
                     ha='center', va='baseline')
 
-
     plt.show()
 
 def creacion_plots(df):
@@ -169,23 +190,23 @@ def creacion_plots(df):
     fig, ax = plt.subplots(1, 1)
     ax.axis('tight')
     ax.axis('off')
+    
     ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
     plt.show()
 
 def creacion_barras_simple(df,x,y,hue = None):
 
-    # Create bar chart
     plt.figure(figsize=(15, 8))
-    ax = sns.barplot(x=x, y=y, hue=hue, data=df)
+    ax = sns.barplot(x=x, y=y, hue=hue, data=df, palette=custom_palette )
+
     plt.xticks(rotation=45)
-    plt.title('Porcentaje de Campos empleabilidad egresados')
+    plt.title('Porcentaje de Campos de Empleabilidad de Egresados')
 
     # Añadir etiquetas numéricas
     for p in ax.patches:
         ax.annotate(f'{int(p.get_height())}', (p.get_x() + p.get_width() / 2., p.get_height()),
                     ha='center', va='baseline')
 
-    # Show the chart
     plt.show()
 
 def estadistica_exploratoria_egresados(df):
@@ -245,8 +266,8 @@ def estadistica_exploratoria_egresados(df):
     # Eliminar la categoría 'Other'
     df_trabajos = df_trabajos[df_trabajos['Category'] != 'Other']
     print(df_trabajos)
-    creacion_barras_simple2(df_trabajos, df_trabajos['Category'], df_trabajos['Percentage'])
-    #creacion_barras_simple(df_trabajos,df_trabajos['Category'],df_trabajos['Count'])
+    #creacion_barras_simple2(df_trabajos, df_trabajos['Category'], df_trabajos['Percentage'])
+    creacion_barras_simple(df_trabajos,df_trabajos['Category'],df_trabajos['Count'])
 
  # Función para crear una gráfica de barras simple
 
@@ -452,7 +473,7 @@ def eda_universidad(df):
     #print(university_counts)
     # Graficamos solo las 20 universidades más frecuentes.
     plt.figure(figsize=(12, 8))
-    ax = sns.barplot(x='Percentage', y='UNIVERSIDAD', data=university_counts.head(20),palette='Blues_d')
+    ax = sns.barplot(x='Percentage', y='UNIVERSIDAD', data=university_counts.head(20),palette=custom_palette)
 
     # Añadimos anotaciones a cada barra para mostrar el porcentaje.
     for p in ax.patches:
@@ -628,7 +649,7 @@ def eda_universidad(df):
     field_counts.columns = ['CAMPO_ESTUDIO', 'Count']
 
     plt.figure(figsize=(12, 8))
-    ax2 = sns.barplot(x='Count', y='CAMPO_ESTUDIO', data=field_counts.head(10))  # Show top 20 fields of study
+    ax2 = sns.barplot(x='Count', y='CAMPO_ESTUDIO', data=field_counts.head(10),palette=custom_palette)  # Show top 20 fields of study
 
     # Adding annotations to each bar
     for p in ax2.patches:
@@ -688,7 +709,7 @@ def campo_estudio(df):
     df = pd.DataFrame(data)
     # Gráfica
     plt.figure(figsize=(12, 8))
-    bars = plt.barh(df['Campo'], df['Cantidad'], color='purple')
+    bars = plt.barh(df['Campo'], df['Cantidad'], color=custom_palette)
 
     # Agregar etiquetas de número
     for bar in bars:
@@ -751,7 +772,7 @@ def grafica_idiomas(df):
     contingency_table = pd.crosstab(df['LANGUAGE_MAPEADO'], df['NIVEL'])
 
     # Gráfico de barras apiladas
-    contingency_table.plot(kind='bar', stacked=True, figsize=(10, 7))
+    contingency_table.plot(kind='bar', stacked=True, figsize=(10, 7),color=custom_palette)
     plt.xlabel('Idioma')
     plt.ylabel('Cantidad')
     plt.title('Distribución de Niveles por Idioma')
@@ -779,7 +800,7 @@ def lluvia_palabras_skills(df):
 
     # Creación del gráfico de barras
     plt.figure(figsize=(15, 8))
-    bars = plt.bar(skills, counts, color='skyblue')
+    bars = plt.bar(skills, counts, color=custom_palette)
     plt.xlabel('Habilidades')
     plt.ylabel('Frecuencia')
     plt.title('Las 10 habilidades más comunes')
@@ -844,7 +865,7 @@ def lluvia_palabras_descripcion(df):
     print(top_words)
     # Creación del gráfico de barras
     plt.figure(figsize=(15, 8))
-    bars = plt.bar(words, counts, color='skyblue')
+    bars = plt.bar(words, counts, color=custom_palette)
     plt.xlabel('Palabras')
     plt.ylabel('Frecuencia')
     plt.title('Las 10 palabras más comunes en DESCRIPCION')
@@ -872,7 +893,7 @@ def tamaño_empresas_grf(df):
     value_counts = df['TAMANO_EMPRESA_ACTUAL'].value_counts()
     value_counts = value_counts[1:]
     # Crear el gráfico de barras
-    value_counts.plot(kind='bar', color='skyblue')
+    value_counts.plot(kind='bar', color=custom_palette)
 
     plt.title('Distribución de Rangos')
     plt.xlabel('Rango')
@@ -896,7 +917,8 @@ def contratacion(df,value):
 
     # Crear un histograma
     plt.figure(figsize=(10, 6))
-    bars = value_counts.plot(kind='bar')
+    bars = value_counts.plot(kind='bar', color=custom_palette)
+
 
     plt.title('Distribución de Años de Contratación de Egresados (después de 2014)')
     plt.xlabel('Año')
