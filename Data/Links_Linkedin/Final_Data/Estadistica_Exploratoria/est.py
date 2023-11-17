@@ -956,11 +956,29 @@ def graph_descripcion_trabajo(df,value):
     plt.axis("off")
     plt.show()
 
+
 # Main Execution
 if __name__ == "__main__":
+
+
     dataframes_list = get_dfs()
+    print(len(dataframes_list))
+    cont = 1
+
     for i in dataframes_list:
-        print(i.info())
+
+        print("Guardando DataFrame número", cont)
+        
+        try :
+            i.to_excel(f"archivo_ss{cont}.xlsx", engine='openpyxl')
+        except:
+            print("no se pudo con",cont)
+        cont += 1
+
+
+        
+'''
+
     if dataframes_list:
         
         #estadistica_exploratoria_egresados(dataframes_list[1])
@@ -981,3 +999,4 @@ if __name__ == "__main__":
         
     else:
         print("No DataFrames loaded.")
+'''
