@@ -165,7 +165,15 @@ def creacion_barras(df, x, y, hue=None):
                     (24/255, 47/255, 88/255),   # Azul oscuro
                     (94/255, 35/255, 99/255)] # Morado
 
-
+    print("sssss")
+    print("sssss")
+    print("sssss")
+    print("sssss")
+    print(df[x])
+    df[x] = df[x].str.replace('ingeniería', 'Ing.', case=False)
+    df[x] = df[x].str.replace('Ingenieria', 'Ing.', case=False)  #
+    df[x] = df[x].str.replace('sistemas y computacion', 'sistemas', case=False)  #
+    
 
     plt.figure(figsize=(15, 8))
     if hue:
@@ -175,14 +183,34 @@ def creacion_barras(df, x, y, hue=None):
         # Usar la paleta personalizada sin hue
         ax = sns.barplot(x=x, y=y, data=df, palette=custom_palette[:len(df[x].unique())])
 
-    plt.xticks(rotation=45)
-    plt.title('Conteo de Personas por Carrera y Sexo')
+    plt.xticks(rotation=45, horizontalalignment='right',fontsize =20)
+    plt.title('Conteo de Personas por Carrera y Sexo',fontsize=22)
 
-    # Añadir etiquetas numéricas
+    # Añadir etiquetas numéricas con el tamaño de fuente ajustado
     for p in ax.patches:
         ax.annotate(f'{int(p.get_height())}', (p.get_x() + p.get_width() / 2., p.get_height()),
-                    ha='center', va='baseline')
+                    ha='center', va='center', fontsize=12, color='black', xytext=(0, 5),
+                    textcoords='offset points')
 
+    
+
+    # Ajustar la leyenda
+    leg = plt.legend(title='Sexo', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='large')
+    leg.set_title('Sexo', prop={'size': 20})  # Aumentar el tamaño del título de la leyenda
+    for text in leg.get_texts():  # Aumentar el tamaño del texto de la leyenda
+        text.set_fontsize('16')  # Puedes ajustar el tamaño según tus necesidades
+
+    # Ajustar los límites del eje y si es necesario
+    plt.ylim(0, df[y].max() * 1.2)
+
+    plt.tight_layout()  # Ajusta automáticamente los parámetros para dar espacio a los elementos
+        # Ajustar el tamaño de la fuente de las etiquetas de los ticks
+    plt.tick_params(axis='x', labelsize=22)
+    plt.tick_params(axis='y', labelsize=22)
+    plt.xticks(rotation=45, horizontalalignment='right', fontsize=20)  # Tamaño de fuente de las etiquetas en el eje x
+    plt.yticks(fontsize=20)  # Tamaño de fuente de las etiquetas en el eje y
+    plt.xlabel(x, fontsize=18)  # Título del eje x
+    plt.ylabel(y, fontsize=18)  
     plt.show()
 
 def creacion_plots(df):
@@ -194,20 +222,25 @@ def creacion_plots(df):
     ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
     plt.show()
 
-def creacion_barras_simple(df,x,y,hue = None):
+def creacion_barras_simple(df, x, y, hue=None):
+    # Asegúrate de que custom_palette esté definida, aquí uso una genérica como ejemplo
+    
 
     plt.figure(figsize=(15, 8))
-    ax = sns.barplot(x=x, y=y, hue=hue, data=df, palette=custom_palette )
+    ax = sns.barplot(x=x, y=y, hue=hue, data=df, palette=custom_palette)
 
-    plt.xticks(rotation=45)
-    plt.title('Porcentaje de Campos de Empleabilidad de Egresados')
-
+    plt.xticks(rotation=45, horizontalalignment='right', fontsize=22)
+    plt.title('Porcentaje de Campos de Empleabilidad de Egresados', fontsize=22)
+    plt.yticks(fontsize= 18)
     # Añadir etiquetas numéricas
     for p in ax.patches:
         ax.annotate(f'{int(p.get_height())}', (p.get_x() + p.get_width() / 2., p.get_height()),
-                    ha='center', va='baseline')
+                    ha='center', va='center', fontsize=12, color='black', xytext=(0, 5),
+                    textcoords='offset points')
 
     plt.show()
+
+
 
 def estadistica_exploratoria_egresados(df):
     # Normalizar los datos para programa_egresado
@@ -249,7 +282,7 @@ def estadistica_exploratoria_egresados(df):
     #print(df['LUGAR_VIVE'])
     
     #creacion_plots(location_counts)
-    #crear_mapa(location_counts)
+    crear_mapa(location_counts)
 
     
     
@@ -348,32 +381,48 @@ def categorizar_trabajos(df_serie, df_completo ,custom_categories=None):
 
 def crear_mapa(df):
 
+# Agrupar por lugar de residencia y sumar los conteos
+    # Filtrar el DataFrame para excluir las filas donde 'LUGAR_VIVE' es 'Ninguno'
+    df_filtrado = df[df['LUGAR_VIVE'] != 'Ninguno']
 
-    # Crear el gráfico   de pastel
-    world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-    # Merge the GeoDataFrame with your DataFrame
-    merged = world.set_index('name').join(df.set_index('LUGAR_VIVE'))
-
-    # Set up the plots
-    fig, ax = plt.subplots(1, figsize=(15, 10))
-
-    # Plot boundaries
-    merged.boundary.plot(ax=ax)
-
-    # Plot using logarithmic color scale
-    merged['Log_Conteo'] = np.log(merged['Conteo'])
-
-    # Set minimum and maximum values for the color scale
-    val_min = np.log(1)  # Log of minimum value
-    val_max = np.log(3200)  # Log of maximum value
-
-    merged.plot(column='Log_Conteo', ax=ax, legend=False, cmap='OrRd',
-                legend_kwds={'label': "Logarithmic Count by Country"},
-                vmin=val_min, vmax=val_max)
-
+    conteos_por_lugar = df_filtrado.groupby('LUGAR_VIVE')['Conteo'].sum()
     
-    # Show the plot
+
+    # Ordenar los conteos de mayor a menor y seleccionar los 5 primeros
+
+    conteos_top5 = conteos_por_lugar.sort_values(ascending=False).head(5)
+    print(conteos_top5)
+    # Crear el gráfico de pastel
+    fig, ax = plt.subplots()
+
+    custom_palette = [(187/255, 213/255, 49/255),   # Verde
+                    (160/255, 170/255, 15/255),   # Verde
+                    (31/255, 107/255, 170/255),   # Azul claro
+                    (24/255, 47/255, 88/255),   # Azul oscuro
+                    (94/255, 35/255, 99/255)] # Morado
+
+
+    # Generar el gráfico de pastel con la paleta de colores personalizada
+    fig, ax = plt.subplots()
+    patches, texts, autotexts = ax.pie(conteos_top5, autopct='%1.1f%%', startangle=90, colors=custom_palette, labels=None)
+
+    # Ajustar la posición de los porcentajes para que sean más legibles
+    plt.setp(autotexts, size=5, weight="bold", color="white")
+
+    # Asegurar que el gráfico sea circular
+    ax.axis('equal')
+
+    # Título del gráfico
+    plt.title('Distribución Porcentual de Residencia de Egresados - Top 5 Lugares', fontsize=22)
+
+    # Crear etiquetas para la leyenda con el porcentaje incluido
+    labels_legend = [f'{label}: {pct.get_text()}' for label, pct in zip(conteos_top5.index, autotexts)]
+
+    # Añadir leyenda con la convención de colores y las etiquetas ajustadas
+    legend = ax.legend(patches, labels_legend, title="Lugares", fontsize=22, title_fontsize=22)
+    # Mostrar el gráfico
     plt.show()
+
 
 def modify_2(df):
     indices_problematicos = df[df['PROGRAMA_PREGRADO'] == 'Otro'].index
@@ -457,31 +506,63 @@ def mapeo_carrera(field):
     return field
 
 def eda_universidad(df):
+            
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Servicio Nacional de aprendizaje (SENA)', 'SENA', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad de Los Andes', 'U. Andes', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad EAN', 'U. EAN', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad de La Sabana', 'U. Sabana', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad Distrital Francisco José de Calda', 'U. Distrital', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Pontificia Universidad Javeriana:', 'U. Javeriana', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Escuela Tecnológica Instituto Técnico Central', 'ETITC', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad del Rosario', 'U. Rosario', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('INSA Lyon - Institut National des Sciences Appliquées de Lyon', 'INSA Lyon', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad Externado de Colombia', 'U. Externado', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Data Science for All by Correlation One', 'DS4A', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad de Los Andes', 'U. Andes', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Servicio Nacional de aprendizaje (SENA)', 'SENA', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Tecnológico de Monterrey', 'Tec de Monterrey', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Servicio Nacional de aprendizaje (SENA)', 'SENA', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad Pedagógica y Tecnológica de Colombia', 'UPTC', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad Militar Nueva Granada', 'UMNG', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Universidad de Los Andes', 'U. Andes', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Escuela Colombiana de Ingeniería Julio Garavito', 'U. Julio Garavito', case=False, regex=False)
+    df['UNIVERSIDAD'] = df['UNIVERSIDAD'].str.replace('Pontificia Universidad Javeriana', 'U. Javeriana', case=False, regex=False)
     
+    # Ahora recreamos 'university_counts' después de los reemplazos
     university_counts = df['UNIVERSIDAD'].value_counts().reset_index()
     university_counts.columns = ['UNIVERSIDAD', 'Count']
 
-    # Excluimos la 'Universidad Nacional De Colombia' del conteo.
+    # Excluimos 'Universidad Nacional de Colombia' y otros que desees excluir del conteo
     university_counts = university_counts[university_counts['UNIVERSIDAD'] != 'Universidad Nacional de Colombia']
-    #university_counts = university_counts[university_counts['UNIVERSIDAD'] != 'Servicio Nacional de Aprendizaje (SENA)']
-    print(university_counts)
-    # Calculamos el total de las cuentas después de excluir la Universidad Nacional De Colombia.
-    total_counts = university_counts['Count'].sum()
+    university_counts = university_counts[university_counts['UNIVERSIDAD'] != 'Fe y Alegria Torquigua']
+    university_counts = university_counts[university_counts['UNIVERSIDAD'] != 'DS4A']
+    university_counts = university_counts[university_counts['UNIVERSIDAD'] != 'Data Science for All by Correlation One']
 
+    # Calculamos el total de las cuentas después de las exclusiones
+    total_counts = university_counts['Count'].sum()
+    print(total_counts)
     # Calculamos el porcentaje que representa cada universidad.
+    
     university_counts['Percentage'] = (university_counts['Count'] / total_counts) * 100
-    #print(university_counts)
+    print(university_counts['Percentage'])
     # Graficamos solo las 20 universidades más frecuentes.
     plt.figure(figsize=(12, 8))
-    ax = sns.barplot(x='Percentage', y='UNIVERSIDAD', data=university_counts.head(20),palette=custom_palette)
+    ax = sns.barplot(x='Percentage', y='UNIVERSIDAD', data=university_counts.head(20), palette=custom_palette)
 
     # Añadimos anotaciones a cada barra para mostrar el porcentaje.
     for p in ax.patches:
-        ax.annotate(f'{p.get_width():.2f}%', (p.get_width(), p.get_y() + p.get_height() / 2), ha='left', va='center')
+        ax.annotate(f'{p.get_width():.2f}%', (p.get_width(), p.get_y() + p.get_height() / 2), ha='left', va='center', fontsize=15)
+    # Imprimimos el nombre de la universidad y el porcentaje
+    for index, row in university_counts.iterrows():
+        print(f"{row['UNIVERSIDAD']}: {row['Percentage']:.2f}%")
 
-    plt.title('Porcentaje de universidades donde se realizan los posgrados excluidos la UNAL')
-    plt.xlabel('Percentage')
-    plt.ylabel('University')
+    plt.title('Porcentaje de universidades donde se realizan los posgrados excluidos la UNAL', fontsize=22)
+    plt.xlabel('Porcentaje', fontsize=22)
+    plt.ylabel('Universidad', fontsize=22)
+
+    # Ajustar el tamaño de la fuente de las etiquetas de los ticks del eje y
+    plt.tick_params(axis='y', labelsize=16)
+
     plt.show()
 
     # For CAMPO_ESTUDIO
@@ -700,25 +781,40 @@ def campo_estudio(df):
 
     # Crear un DataFrame
     data = {
-        'Campo': ['Inteligencia artificial & Data Science', 'Gestión de proyectos', 'Ingeniería estructural', 
-                'Ciencia y tecnología de los alimentos', 'Desarrollo web / mobile', 
-                'Emprendimiento/Estudios sobre emprendimiento', 'Mechatronics, Robotics, and Automation Engineering'],
+        'Campo': ['IA & Data Science', 'Gestión de proyectos', 'Ingeniería estructural', 
+                'Ciencia de los alimentos', 'Desarrollo web / mobile', 
+                'Estudios sobre emprendimiento', 'Ingenieria Robotica y Automatizacion'],
         'Cantidad': [49, 105, 47, 38, 80, 13, 83]
     }
 
     df = pd.DataFrame(data)
+
+    # Definir colores personalizados (ejemplo)
+    
     # Gráfica
-    plt.figure(figsize=(12, 8))
-    bars = plt.barh(df['Campo'], df['Cantidad'], color=custom_palette)
+    plt.figure(figsize=(14, 10))  # Aumenta el tamaño si es necesario
+    bars = plt.barh(np.arange(len(df['Campo'])), df['Cantidad'], color=custom_palette)
 
-    # Agregar etiquetas de número
+    # Rotar las etiquetas del eje y
+    plt.yticks(np.arange(len(df['Campo'])), df['Campo'], rotation=0, fontsize=14)  # Rotación ajustada a 0
+
+    # Ajustar el espaciado y el tamaño del texto de las barras
     for bar in bars:
-        plt.text(bar.get_width() - 3, bar.get_y() + bar.get_height()/2 - 0.1, str(bar.get_width()), va='center', ha='left', color='white')
+        plt.text(bar.get_width() + 1, bar.get_y() + bar.get_height()/2 - 0.1, 
+                str(bar.get_width()), va='center', ha='left', color='black', fontsize=14)
 
-    plt.xlabel('Cantidad')
-    plt.ylabel('Campo')
-    plt.title('Distribución de Campos de Especialización')
+    plt.xlabel('Cantidad', fontsize=22)
+    plt.ylabel('Campo', fontsize=22)
+    plt.title('Distribución de Campos de Especialización', fontsize=22)
+
+    # Ajustar los límites si es necesario para hacer espacio para las etiquetas
+    plt.xlim(0, max(df['Cantidad']) + 10)
+    # Ajustar el tamaño de la fuente de las etiquetas de los ticks
+    plt.tick_params(axis='x', labelsize=22)
+    plt.tick_params(axis='y', labelsize=22)
+
     plt.show()
+
     
     # Gestión de la construcción
     
@@ -759,6 +855,12 @@ def map_language(language):
 def grafica_idiomas(df):
 
     df['LANGUAGE_MAPEADO'] = df['LANGUAGE'].apply( map_language)
+    df['NIVEL'] = df['NIVEL'].replace('FULL_PROFESSIONAL', 'PROFESSIONAL_WORKING')
+    df['NIVEL'] = df['NIVEL'].replace('ELEMENTARY', 'Elemental')
+    df['NIVEL'] = df['NIVEL'].replace('FULL_PROFESSIONAL', 'Profesional Completo')
+    df['NIVEL'] = df['NIVEL'].replace('LIMITED_WORKING', 'Limitado')
+    df['NIVEL'] = df['NIVEL'].replace('NATIVE_OR_BILINGUAL', 'Nativo')
+    df['NIVEL'] = df['NIVEL'].replace('PROFESSIONAL_WORKING', 'Nativo')
     # Encontrar los índices de las filas donde 'LANGUAGE_MAPEADO' es 'Español'
     indices_to_drop = df[df['LANGUAGE_MAPEADO'] == 'Español'].index
 
@@ -773,38 +875,81 @@ def grafica_idiomas(df):
 
     # Gráfico de barras apiladas
     contingency_table.plot(kind='bar', stacked=True, figsize=(10, 7),color=custom_palette)
-    plt.xlabel('Idioma')
-    plt.ylabel('Cantidad')
-    plt.title('Distribución de Niveles por Idioma')
+    plt.xlabel('Idioma',fontsize=22)
+    plt.xticks(rotation=45, fontsize=16)
+    plt.yticks(rotation=45, fontsize=16)
+    plt.ylabel('Cantidad',fontsize=22)
+    plt.title('Distribución de Niveles por Idioma',fontsize=22)
     plt.show()
 
 def lluvia_palabras_skills(df):
 
+
     # Combina todas las filas de la columna 'SKILLS' en una sola cadena de texto
     text = ' '.join(str(row) for row in df['SKILLS'].dropna())
+
+    # Reemplaza 'graficas' y 'proyectos' por 'graficas_proyectos'
+    text = text.replace('Gestión', 'Gestión_Proyectos')
+    text = text.replace('proyectos,', 'Gestión_Proyectos')
+    text = text.replace('Office', 'Herramientas_Ofimaticas')
+    text = text.replace('Excel,', 'Herramientas_Ofimaticas')
+    
+    text = text.replace('Proyectos  ', 'Gestión_Proyectos')
+    text = text.replace('Ingeniería', '')
+    text = text.replace('Ingeniería', '')
+    text = text.replace(' , ', 'None')
+    text = text.replace(' , ', 'None')
+    text = text.replace('Herramientas_Ofimaticas,', 'Herramientas_Ofimaticas')
+    text = text.replace('Management,', 'Liderazgo')
+    text = text.replace('Inglés,', 'None')
+    text = text.replace('AutoCAD,', 'AUTOCAD')
+    text = text.replace('datos,', 'Análisis_Datos')
+    text = text.replace('Análisis,', 'Análisis_Datos')
+    text = text.replace('Análisis ', 'Análisis_Datos')
+    text = text.replace('Análisis_Datosde ', 'Análisis_Datos')
+    text = text.replace('Trabajo', 'Trabajo_Equipo')
+    text = text.replace('Desarrollo', 'Liderazgo')
+    text = text.replace('Diseño', 'Planificación')
+    text = text.replace('Project', 'Planificación')
+    text = text.replace('equipo,', 'Trabajo_Equipo')
+    text = text.replace('Engineering,', 'Trabajo_Equipo')
+    text = text.replace('Python,', 'Python')
+    text = text.replace('Matlab,', 'Matlab')
+    text = text.replace('Capacidad', 'Liderazgo')
+    
+    
+    
 
     # Usa Counter para obtener la frecuencia de cada palabra
     word_freq = Counter(text.split())
 
-    # Filtrado de palabras comunes o irrelevantes (puedes ajustar esta lista según tus necesidades)
-    stopwords = ["de", "y", "en", "la", "el", "None"] # Ejemplo de palabras a filtrar
+    # Filtrado de palabras comunes o irrelevantes
+    stopwords = ["de", "y", "en", "la", "el", "None",''] # Ejemplo de palabras a filtrar
     for word in stopwords:
         if word in word_freq:
             del word_freq[word]
 
-    # Obtener las habilidades más comunes y sus frecuencias
+
 
     # Obtener las habilidades más comunes y sus frecuencias
     top_skills = word_freq.most_common(10)
     skills, counts = zip(*top_skills)
 
+
+
+    # Imprime las 10 habilidades más comunes y sus frecuencias
+    for skill, count in top_skills:
+        print(f"{skill}: {count}")
+
+
     # Creación del gráfico de barras
     plt.figure(figsize=(15, 8))
     bars = plt.bar(skills, counts, color=custom_palette)
-    plt.xlabel('Habilidades')
-    plt.ylabel('Frecuencia')
-    plt.title('Las 10 habilidades más comunes')
-    plt.xticks(rotation=45)
+    plt.xlabel('Habilidades', fontsize=22)
+    plt.ylabel('Frecuencia', fontsize=22)
+    plt.title('Las 10 habilidades más comunes', fontsize=22)
+    plt.xticks(rotation=45, fontsize=18)
+    plt.yticks(fontsize=14)
     plt.tight_layout()
 
     # Agrega etiquetas con el valor exacto sobre cada barra
@@ -840,6 +985,55 @@ def lluvia_palabras_descripcion(df):
     df = df[df['DESCRIPCION'].astype(str) != '[None]']
     df = df[df['DESCRIPCION'].astype(str) != 'I']
     text = ' '.join(str(row) for row in df['DESCRIPCION'].dropna())
+
+    text = text.replace('desarrollo', 'Planificacion_Proyectos')
+    text = text.replace('procesos', 'Planificacion_Proyectos')
+    text = text.replace('gestión', 'Planificacion_Proyectos')
+    text = text.replace('diseño', 'Planificacion_Proyectos')
+    text = text.replace('design', 'Planificacion_Proyectos')
+    text = text.replace('software', 'Software')
+    text = text.replace('Software,', 'Software')
+    text = text.replace('sistemas', 'Software')
+    text = text.replace('manejo', 'Planificacion_Proyectos')
+    text = text.replace('análisis', 'Planificacion_Proyectos')
+    text = text.replace('conocimientos', 'None')
+    text = text.replace('habilidades', 'Habilidades_Blandas')
+    text = text.replace('profesional', 'Habilidades_Blandas')
+    text = text.replace('control', 'Planificacion_Proyectos')
+    text = text.replace('development', 'Software')
+    text = text.replace('Con', 'None')
+    text = text.replace('herramientas', 'None')
+    text = text.replace('new', 'None')
+    text = text.replace('conocimiento', 'Habilidades_Duras')
+    text = text.replace('equipo', 'Trabajo_Equipo')
+    text = text.replace('Trabajo_Equipo,', 'Trabajo_Equipo')
+    text = text.replace('project', 'Planificacion_Proyectos')
+    text = text.replace('knowledge', 'Habilidades_Duras')
+    text = text.replace('learning', 'Habilidades_Duras')
+    text = text.replace('equipos', 'Trabajo_Equipo')
+    text = text.replace('projects', 'Planificacion_Proyectos')
+    text = text.replace('working', 'Planificacion_Proyectos')
+    text = text.replace('Ingeniería', 'Planificacion_Proyectos')
+    text = text.replace('management', 'Planificacion_Proyectos')
+    text = text.replace('work', 'Habilidades_Duras')
+    text = text.replace('data', 'Análisis_Datos')
+    text = text.replace('área', 'None')
+    text = text.replace('persona', 'None')
+    text = text.replace('Nones', 'None')
+    text = text.replace('professional', 'None')
+    text = text.replace('trabajar', 'Disciplina')
+    text = text.replace('Civil', 'Habilidades_Duras')
+    
+    text = text.replace('Industrial', 'Habilidades_Duras')
+    text = text.replace('calidad', 'Habilidades_Duras')
+    text = text.replace('Habilidades_Duras,', 'Habilidades_Duras')
+    text = text.replace('industrial', 'Habilidades_Duras')
+    text = text.replace('diferentes', 'None')
+    
+    
+    
+        
+
     print()
     # Usa Counter para obtener la frecuencia de cada palabra
     word_freq = Counter(text.split())
@@ -850,7 +1044,11 @@ def lluvia_palabras_descripcion(df):
     # Filtrado de palabras comunes o irrelevantes
     stop_words = set(stopwords.words('spanish')).union(stopwords.words('english'))
     
-    # Unir palabras adicionales con las palabras vacías existentes
+    stopwords = ["de", "y", "en", "la", "el", "None"] # Ejemplo de palabras a filtrar
+    for word in stopwords:
+        if word in word_freq:
+            del word_freq[word]
+        # Unir palabras adicionales con las palabras vacías existentes
     stop_words = stop_words.union(additional_stopwords)
     for word in stop_words:
         if word in word_freq:
@@ -866,10 +1064,10 @@ def lluvia_palabras_descripcion(df):
     # Creación del gráfico de barras
     plt.figure(figsize=(15, 8))
     bars = plt.bar(words, counts, color=custom_palette)
-    plt.xlabel('Palabras')
-    plt.ylabel('Frecuencia')
-    plt.title('Las 10 palabras más comunes en DESCRIPCION')
-    plt.xticks(rotation=45)
+    plt.xlabel('Palabras',fontsize= 22)
+    plt.ylabel('Frecuencia',fontsize= 22)
+    plt.title('Las 10 palabras más comunes en DESCRIPCION',fontsize= 22)
+    plt.xticks(rotation=45,fontsize= 20)
     plt.tight_layout()
 
     # Agrega etiquetas con el valor exacto sobre cada barra
@@ -888,18 +1086,33 @@ def lluvia_palabras_descripcion(df):
     plt.show()
 
 def tamaño_empresas_grf(df):
-    df['TAMANO_EMPRESA_ACTUAL'] = df['TAMANO_EMPRESA_ACTUAL'].dropna()
-    # Contar la frecuencia de cada rango
-    value_counts = df['TAMANO_EMPRESA_ACTUAL'].value_counts()
-    value_counts = value_counts[1:]
-    # Crear el gráfico de barras
-    value_counts.plot(kind='bar', color=custom_palette)
+    
 
-    plt.title('Distribución de Rangos')
-    plt.xlabel('Rango')
-    plt.ylabel('Cantidad')
-    plt.xticks(rotation=45)
-    plt.tight_layout()
+    df = df.dropna(subset=['TAMANO_EMPRESA_ACTUAL'])
+
+    # Mapeo de los rangos de tamaño de empresa a las nuevas categorías
+    def categorize_size(size):
+        if size in ['2-10']:
+            return 'Empresa Super Pequeña'
+        elif size in ['11-50']:
+            return 'Empresa Pequeña'
+        elif size in ['201-500', '501-1000']:
+            return 'Empresa Mediana'
+        elif size in ['1001-inf']:
+            return 'Empresa Grande'
+        else:
+            return 'Otra'
+
+    df['TAMANO_EMPRESA_ACTUAL'] = df['TAMANO_EMPRESA_ACTUAL'].apply(categorize_size)
+
+    # Contar la frecuencia de cada categoría
+    category_counts = df['TAMANO_EMPRESA_ACTUAL'].value_counts()
+
+    # Crear el gráfico de torta
+    colors = custom_palette[:len(category_counts)]  # Asegúrate de que la paleta tenga suficientes colores
+    plt.figure(figsize=(10, 8))
+    plt.pie(category_counts, labels=category_counts.index, autopct='%1.1f%%', colors=colors, startangle=140, textprops={'fontsize': 14})
+    plt.title('Distribución del Tamaño de las Empresas', fontsize=22)
 
     plt.show()
 
@@ -920,15 +1133,17 @@ def contratacion(df,value):
     bars = value_counts.plot(kind='bar', color=custom_palette)
 
 
-    plt.title('Distribución de Años de Contratación de Egresados (después de 2014)')
-    plt.xlabel('Año')
-    plt.ylabel('Porcentaje de Egresados (%)')
+    plt.title('Distribución de Años de Contratación de Egresados (después de 2014)',fontsize=22)
+    plt.xlabel('Año',fontsize=22)
+    plt.ylabel('Porcentaje de Egresados (%)',fontsize=22)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
     plt.grid(axis='y')
 
     # Agregar etiquetas de porcentaje en las barras
     for bar in bars.patches:
         bars.annotate(f'{bar.get_height():.2f}%', (bar.get_x() + bar.get_width() / 2, bar.get_height()),
-                    ha='center', va='bottom')
+                    ha='center', va='bottom',fontsize=18)
 
     plt.show()
 
@@ -960,32 +1175,28 @@ def graph_descripcion_trabajo(df,value):
 # Main Execution
 if __name__ == "__main__":
 
-
     dataframes_list = get_dfs()
     print(len(dataframes_list))
     cont = 1
 
     for i in dataframes_list:
-
+        '''
         print("Guardando DataFrame número", cont)
         
         try :
             i.to_excel(f"archivo_ss{cont}.xlsx", engine='openpyxl')
         except:
             print("no se pudo con",cont)
-        cont += 1
+        cont += 1'''
 
-
-        
-'''
 
     if dataframes_list:
         
-        #estadistica_exploratoria_egresados(dataframes_list[1])
+        estadistica_exploratoria_egresados(dataframes_list[1])
         #print(dataframes_list[1].info())
         #print(dataframes_list[2]['INDUSTRY_COMPANY'])
         #graph_descripcion_trabajo(dataframes_list[2],'DESCRICION_TRABAJO_ACTUAL')
-        contratacion(dataframes_list[2],'FINALIZACION_AÑO')
+        #contratacion(dataframes_list[2],'FINALIZACION_AÑO')
         #tamaño_empresas_grf(dataframes_list[2])
         #lluvia_palabras_descripcion(dataframes_list[1])
         #lluvia_palabras_skills(dataframes_list[1])
@@ -999,4 +1210,3 @@ if __name__ == "__main__":
         
     else:
         print("No DataFrames loaded.")
-'''
